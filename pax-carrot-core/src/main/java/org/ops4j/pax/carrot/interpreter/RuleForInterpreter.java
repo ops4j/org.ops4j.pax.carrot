@@ -86,13 +86,21 @@ import org.ops4j.pax.carrot.step.Step;
 public class RuleForInterpreter implements Interpreter {
 
     protected Fixture fixture;
+
     protected Statistics statistics;
+
     private Column[] columns;
+
     private Invocation beforeRowInvocation;
+
     private Invocation beforeFirstExpectationInvocation;
+
     private Invocation afterRowInvocation;
+
     private ELExecutionContext carrotContext;
+
     private ValueExpression filterExpr;
+
     private HashMap<String, String> rowMap;
 
     /**
@@ -154,8 +162,7 @@ public class RuleForInterpreter implements Interpreter {
     /**
      * Interprets the contents of the given item as a column header.
      * 
-     * @param header
-     *            a table cell
+     * @param header a table cell
      * @return
      */
     private Column parseColumn(Item header) {
@@ -266,13 +273,14 @@ public class RuleForInterpreter implements Interpreter {
     private void scanAnnotations() {
         if (fixture != null) {
             for (Method method : fixture.getTarget().getClass().getMethods()) {
-                if (method.isAnnotationPresent(BeforeRow.class)) {
+                if (method.isAnnotationPresent(BeforeRow.class) || method.getName().equals("reset")) {
                     beforeRowInvocation = new MethodInvocation(fixture.getTarget(), method);
                 }
 
-                if (method.isAnnotationPresent(BeforeFirstExpectation.class)) {
+                if (method.isAnnotationPresent(BeforeFirstExpectation.class)
+                        || method.getName().equals("execute")) {
                     beforeFirstExpectationInvocation = new MethodInvocation(fixture.getTarget(),
-                        method);
+                            method);
                 }
 
                 if (method.isAnnotationPresent(AfterRow.class)) {
