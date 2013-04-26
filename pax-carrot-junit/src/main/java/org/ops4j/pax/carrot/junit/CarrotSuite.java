@@ -20,11 +20,11 @@ package org.ops4j.pax.carrot.junit;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
 import org.codehaus.plexus.util.DirectoryScanner;
-import org.junit.runner.RunWith;
 import org.junit.runner.Runner;
 import org.junit.runner.notification.RunNotifier;
 import org.junit.runners.Suite;
@@ -55,11 +55,11 @@ import org.ops4j.pax.carrot.runner.listener.RunnerListener;
  * }
  * </pre>
  * 
- * The suite first builds a list of input files to be run as Pax Carrot tests. The input files are located
- * under the {@code inputDir} root. The file patterns to be included or excluded are specified by
- * the {@code includes} and {@code excludes} properties. The default include pattern is
- * <code>**&#47;*.html</code>, the exclude pattern list is empty by default. Each of these properties can
- * be a list of Strings interpreted as Ant file patterns.
+ * The suite first builds a list of input files to be run as Pax Carrot tests. The input files are
+ * located under the {@code inputDir} root. The file patterns to be included or excluded are
+ * specified by the {@code includes} and {@code excludes} properties. The default include pattern is
+ * <code>**&#47;*.html</code>, the exclude pattern list is empty by default. Each of these
+ * properties can be a list of Strings interpreted as Ant file patterns.
  * <p>
  * The suite then runs all files matching at least one of the include patterns and none of the
  * exclude patterns.
@@ -72,14 +72,14 @@ import org.ops4j.pax.carrot.runner.listener.RunnerListener;
 public class CarrotSuite extends Suite {
 
     private List<Runner> runners = new ArrayList<Runner>();
+
     private RunnerListener listener;
 
     /**
      * Constructor for internal use by JUnit. Applications may only use this class as argument to
      * the {@link RunWith} annotation.
      * 
-     * @param klass
-     *            the class to be run as a test suite
+     * @param klass the class to be run as a test suite
      * @throws InitializationError
      */
     public CarrotSuite(Class<?> klass) throws InitializationError {
@@ -93,11 +93,11 @@ public class CarrotSuite extends Suite {
      * @throws InitializationError
      */
     private void buildRunners() throws InitializationError {
-        CarrotConfiguration fc = getTestClass().getJavaClass().getAnnotation(CarrotConfiguration.class);
+        CarrotConfiguration fc = getTestClass().getJavaClass().getAnnotation(
+                CarrotConfiguration.class);
         try {
-            DefaultCarrotConfiguration config = (fc == null) 
-                ? new DefaultCarrotConfiguration() 
-                : fc.value().newInstance();            
+            DefaultCarrotConfiguration config = (fc == null) ? new DefaultCarrotConfiguration()
+                    : fc.value().newInstance();
 
             assert config.getInputDir() != null;
             assert config.getOutputDir() != null;
@@ -119,8 +119,11 @@ public class CarrotSuite extends Suite {
             if (files.length == 0) {
                 throw new InitializationError("no matching input files");
             }
+            // Scanner returns files in random order, so sort them.
+            Arrays.sort(files);
             for (String testPath : files) {
-                CarrotRunner runner = new CarrotRunner(inputDirectory, outputDirectory, testPath, listener);
+                CarrotRunner runner = new CarrotRunner(inputDirectory, outputDirectory, testPath,
+                        listener);
                 runners.add(runner);
             }
 
@@ -144,7 +147,7 @@ public class CarrotSuite extends Suite {
     protected List<Runner> getChildren() {
         return runners;
     }
-    
+
     @Override
     public void run(RunNotifier notifier) {
         super.run(notifier);
