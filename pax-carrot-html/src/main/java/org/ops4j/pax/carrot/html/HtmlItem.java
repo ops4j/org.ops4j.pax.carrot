@@ -24,14 +24,16 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.jsoup.nodes.Element;
-import org.ops4j.pax.carrot.api.Marker;
+import org.jsoup.nodes.TextNode;
 import org.ops4j.pax.carrot.api.Item;
+import org.ops4j.pax.carrot.api.Marker;
 
 public class HtmlItem implements Item {
 
     private static HtmlMarkerRenderer renderer = new HtmlMarkerRenderer();
 
     private Element elem;
+
     private List<String> descendantTags;
 
     public HtmlItem(Element elem) {
@@ -54,7 +56,17 @@ public class HtmlItem implements Item {
     }
 
     public String text() {
-        return elem.text();
+        /*
+         * If this is a cell contaning plain text without inline formatting, make sure we preserve
+         * whitespace.
+         */
+        if (elem.childNodeSize() == 1 && (elem.childNode(0) instanceof TextNode)) {
+            TextNode textNode = (TextNode) elem.childNode(0);
+            return textNode.getWholeText();
+        }
+        else {
+            return elem.text();
+        }
     }
 
     public void text(String value) {
@@ -101,12 +113,12 @@ public class HtmlItem implements Item {
 
     public Item at(int pos, int... positions) {
         int siblingIndex = pos + elem.elementSiblingIndex();
-        Element sibling = null;        
+        Element sibling = null;
         if (pos == 0) {
             sibling = elem;
         }
         else {
-            sibling = elem.parent().children().get(siblingIndex);            
+            sibling = elem.parent().children().get(siblingIndex);
         }
         Element child = sibling;
         int level = 0;

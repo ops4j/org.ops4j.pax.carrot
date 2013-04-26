@@ -33,34 +33,34 @@ public class HtmlItemTest {
 
     @Test
     public void parseTwoByTwoTable() {
-        String html = "<html><table><tr><td>one</td><td>two</td></tr>" +
-                        "<tr><td>three</td><td>four</td></tr></table></html>";
-        
+        String html = "<html><table><tr><td>one</td><td>two</td></tr>"
+                + "<tr><td>three</td><td>four</td></tr></table></html>";
+
         Document document = Jsoup.parse(html);
         Element table = document.select("table").get(0);
-        
+
         Item item = new HtmlItem(table, "tr", "td");
         assertThat(item, is(notNullValue()));
         assertThat(item.hasChildren(), is(true));
         assertThat(item.hasSiblings(), is(false));
         assertThat(item.at(0), is(item));
-        
+
         Item firstRow = item.at(0, 0);
         assertThat(firstRow, is(notNullValue()));
         assertThat(firstRow.hasChildren(), is(true));
         assertThat(firstRow.hasSiblings(), is(true));
         assertThat(firstRow.numSiblings(), is(1));
-        
+
         Item secondRow = item.at(0, 1);
         assertThat(secondRow, is(notNullValue()));
         assertThat(secondRow.hasChildren(), is(true));
         assertThat(secondRow.hasSiblings(), is(false));
         assertThat(firstRow.nextSibling(), is(secondRow));
-        
+
         Item one = item.at(0, 0, 0);
         assertThat(one.text(), is("one"));
         assertThat(firstRow.at(0, 0), is(one));
-        
+
         Item two = item.at(0, 0, 1);
         assertThat(two.text(), is("two"));
         assertThat(firstRow.at(0, 1), is(two));
@@ -76,12 +76,12 @@ public class HtmlItemTest {
 
     @Test
     public void editTwoByTwoTable() {
-        String html = "<html><table><tr><td>one</td><td>two</td></tr>" +
-                        "<tr><td>three</td><td>four</td></tr></table></html>";
-        
+        String html = "<html><table><tr><td>one</td><td>two</td></tr>"
+                + "<tr><td>three</td><td>four</td></tr></table></html>";
+
         Document document = Jsoup.parse(html);
         Element table = document.select("table").get(0);
-        
+
         Item item = new HtmlItem(table, "tr", "td");
         item.at(0, 0, 0).text("five");
         item.at(0, 0, 1).text("six");
@@ -93,18 +93,29 @@ public class HtmlItemTest {
         assertThat(item.at(0, 1, 0).text(), is("seven"));
         assertThat(item.at(0, 1, 1).text(), is("eight"));
     }
-    
+
     @Test
     public void checkEncodedText() {
         String html = "<html><table><tr><td>fünf</td><td>sechs</td></tr></table></html>";
-        
+
         Document document = Jsoup.parse(html);
         Element table = document.select("table").get(0);
-        
+
         Item item = new HtmlItem(table, "tr", "td");
 
         assertThat(item.at(0, 0, 0).text(), is("fünf"));
         assertThat(item.at(0, 0, 1).text(), is("sechs"));
     }
-    
+
+    @Test
+    public void whitespaceShouldNotBeTrimmed() {
+        String html = "<html><table><tr><td>eins      zwei</td></tr></table></html>";
+
+        Document document = Jsoup.parse(html);
+        Element table = document.select("table").get(0);
+
+        Item item = new HtmlItem(table, "tr", "td");
+
+        assertThat(item.at(0, 0, 0).text(), is("eins      zwei"));
+    }
 }
