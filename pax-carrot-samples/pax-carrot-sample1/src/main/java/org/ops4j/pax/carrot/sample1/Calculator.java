@@ -18,6 +18,9 @@
 
 package org.ops4j.pax.carrot.sample1;
 
+import javax.inject.Named;
+
+@Named
 public class Calculator {
 
     private int a;

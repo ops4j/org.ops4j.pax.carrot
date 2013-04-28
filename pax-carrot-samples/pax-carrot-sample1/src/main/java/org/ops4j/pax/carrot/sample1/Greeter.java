@@ -18,11 +18,14 @@
 
 package org.ops4j.pax.carrot.sample1;
 
+import javax.inject.Named;
+
 
 /**
  * @author Harald Wellmann
  *
  */
+@Named
 public class Greeter {
 
     private String receiver;

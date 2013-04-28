@@ -31,6 +31,8 @@
         <module>pax-carrot-samples</module>
         <module>pax-carrot-itest</module>
         <module>pax-carrot-osgi</module>
+        <module>pax-carrot-javaee</module>
+        <module>pax-carrot-itest-javaee</module>
     </modules>
 
     <licenses>
