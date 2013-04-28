@@ -25,14 +25,17 @@
         <dependency>
             <groupId>de.odysseus.juel</groupId>
             <artifactId>juel-impl</artifactId>
+            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>de.odysseus.juel</groupId>
             <artifactId>juel-spi</artifactId>
+            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.apache.geronimo.specs</groupId>
             <artifactId>geronimo-el_2.2_spec</artifactId>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.hamcrest</groupId>

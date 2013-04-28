@@ -32,6 +32,11 @@
             <artifactId>plexus-utils</artifactId>
             <version>3.0.5</version>
         </dependency>
+        <dependency>
+            <groupId>org.apache.geronimo.specs</groupId>
+            <artifactId>geronimo-el_2.2_spec</artifactId>
+            <scope>provided</scope>
+        </dependency>
     </dependencies>
     <build>
         <plugins>
