@@ -27,8 +27,6 @@ import org.ops4j.pax.carrot.api.FixtureFactory;
 import org.ops4j.pax.carrot.api.InterpreterSelector;
 import org.ops4j.pax.carrot.api.Statistics;
 
-import de.odysseus.el.util.SimpleContext;
-
 /**
  * Provides an {@link ExecutionContext} for variables, delegating to a {@link javax.el.ELConext}.
  * <p>
@@ -39,7 +37,7 @@ import de.odysseus.el.util.SimpleContext;
  * @author Harald Wellmann
  *
  */
-public class ELExecutionContext extends SimpleContext implements ExecutionContext {
+public class ELExecutionContext extends CarrotELContext implements ExecutionContext {
 
     private ExpressionFactory factory;
     private FixtureFactory fixtureFactory;
@@ -47,7 +45,6 @@ public class ELExecutionContext extends SimpleContext implements ExecutionContex
     private boolean stopOnFirstFailure;
 
     public ELExecutionContext(ExpressionFactory factory, FixtureFactory fixtureFactory, InterpreterSelector interpreterSelector) {
-        super(new CarrotELResolver());
         this.factory = factory;
         this.fixtureFactory = fixtureFactory;
         this.interpreterSelector = interpreterSelector;

@@ -38,23 +38,20 @@ import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.ops4j.pax.carrot.el.MyPojo.Color;
 
-import de.odysseus.el.ExpressionFactoryImpl;
-import de.odysseus.el.util.SimpleContext;
 
-
-public class FixtureELTest {
+public class CarrotELContextTest {
     
     @Rule
     public ExpectedException thrown = ExpectedException.none();
     
     private ExpressionFactory factory;
-    private SimpleContext context;
+    private CarrotELContext context;
     private MyPojo myPojo;
     
     @Before
     public void setUp() {
         factory = ExpressionFactory.newInstance();
-        context = new ELExecutionContext(factory, null, null);
+        context = new CarrotELContext();
         myPojo = new MyPojo();
         myPojo.setMyInt(17);
         myPojo.setMyString("foo");
