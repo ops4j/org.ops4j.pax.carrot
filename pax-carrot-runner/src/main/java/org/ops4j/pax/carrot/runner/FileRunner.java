@@ -100,6 +100,21 @@ public class FileRunner {
         interpreterSelector = new DefaultInterpreterSelector(fixtureLoader);
     }
 
+    public FileRunner(File inputDir, File outputDir, String testPath, FixtureFactory fixtureFactory) {
+        this.inputDir = inputDir;
+        this.outputDir = outputDir;
+        this.testPath = testPath;
+        this.listener = new DefaultRunnerListener();
+
+        this.fixtureLoader = fixtureFactory;
+
+        ExpressionFactoryImpl factory = new ExpressionFactoryImpl();
+        context = new ELExecutionContext(factory, fixtureLoader);
+        fixtureLoader.setContext(context);
+
+        interpreterSelector = new DefaultInterpreterSelector(fixtureLoader);
+    }
+
     /**
      * @return the filter
      */

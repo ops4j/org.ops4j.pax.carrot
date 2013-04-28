@@ -30,6 +30,7 @@
         <module>pax-carrot-junit</module>
         <module>pax-carrot-samples</module>
         <module>pax-carrot-itest</module>
+        <module>pax-carrot-osgi</module>
     </modules>
 
     <licenses>

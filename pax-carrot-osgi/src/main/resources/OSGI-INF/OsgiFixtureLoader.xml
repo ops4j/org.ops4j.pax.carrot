@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" name="OsgiFixtureLoader">
+   <implementation class="org.ops4j.pax.carrot.osgi.OsgiFixtureLoader"/>
+   <reference bind="addFixture" cardinality="0..n" interface="java.lang.Object" name="Fixture" policy="dynamic" target="(pax.carrot.fixture.name=*)" unbind="removeFixture"/>
+   <service>
+      <provide interface="org.ops4j.pax.carrot.api.FixtureFactory"/>
+   </service>
+   <property name="type" type="String" value="osgi"/>
+</scr:component>
