@@ -53,8 +53,8 @@ public class FixtureELTest {
     
     @Before
     public void setUp() {
-        factory = new ExpressionFactoryImpl();
-        context = new ELExecutionContext(factory, null);
+        factory = ExpressionFactory.newInstance();
+        context = new ELExecutionContext(factory, null, null);
         myPojo = new MyPojo();
         myPojo.setMyInt(17);
         myPojo.setMyString("foo");

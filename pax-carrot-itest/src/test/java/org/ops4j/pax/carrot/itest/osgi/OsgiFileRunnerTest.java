@@ -25,7 +25,8 @@ import static org.ops4j.pax.exam.CoreOptions.bundle;
 import static org.ops4j.pax.exam.CoreOptions.junitBundles;
 import static org.ops4j.pax.exam.CoreOptions.mavenBundle;
 import static org.ops4j.pax.exam.CoreOptions.options;
-import static org.ops4j.pax.exam.CoreOptions.*;
+import static org.ops4j.pax.exam.CoreOptions.systemProperty;
+import static org.ops4j.pax.exam.CoreOptions.wrappedBundle;
 
 import java.io.File;
 
@@ -34,7 +35,7 @@ import javax.inject.Inject;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.ops4j.pax.carrot.api.FixtureFactory;
+import org.ops4j.pax.carrot.api.ExecutionContextFactory;
 import org.ops4j.pax.carrot.api.Statistics;
 import org.ops4j.pax.carrot.runner.FileRunner;
 import org.ops4j.pax.exam.Configuration;
@@ -55,7 +56,7 @@ public class OsgiFileRunnerTest {
     private BundleContext bc;
 
     @Inject
-    private FixtureFactory fixtureFactory;
+    private ExecutionContextFactory ecf;
 
     private File inputDir;
 
@@ -105,10 +106,9 @@ public class OsgiFileRunnerTest {
     @Test
     public void runCalculatorTest() {
         assertThat(bc, is(notNullValue()));
-        assertThat(fixtureFactory, is(notNullValue()));
+        assertThat(ecf, is(notNullValue()));
 
-        FileRunner runner = new FileRunner(inputDir, outputDir, "calculator/calculator.html",
-            fixtureFactory);
+        FileRunner runner = new FileRunner(ecf.newInstance(), inputDir, outputDir, "calculator/calculator.html");
         runner.run();
         Statistics stats = runner.getResult();
         assertThat(stats.totalCount(), is(6));

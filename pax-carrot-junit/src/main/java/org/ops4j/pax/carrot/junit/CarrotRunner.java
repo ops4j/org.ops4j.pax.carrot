@@ -24,7 +24,9 @@ import org.junit.runner.Description;
 import org.junit.runner.Runner;
 import org.junit.runner.notification.Failure;
 import org.junit.runner.notification.RunNotifier;
+import org.ops4j.pax.carrot.api.ExecutionContext;
 import org.ops4j.pax.carrot.api.Statistics;
+import org.ops4j.pax.carrot.runner.DefaultExecutionContextFactory;
 import org.ops4j.pax.carrot.runner.FileRunner;
 import org.ops4j.pax.carrot.runner.listener.RunnerListener;
 
@@ -58,7 +60,8 @@ class CarrotRunner extends Runner implements RunnerListener {
      */
     public CarrotRunner(File inputDir, File outputDir, String testPath, RunnerListener listener) {
         this.description = Description.createSuiteDescription(testPath);
-        this.fileRunner = new FileRunner(inputDir, outputDir, testPath, this);
+        ExecutionContext context = new DefaultExecutionContextFactory().newInstance();
+        this.fileRunner = new FileRunner(context, inputDir, outputDir, testPath, this);
         this.listener = listener;
     }
 

@@ -21,28 +21,20 @@ package org.ops4j.pax.carrot.runner;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.List;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.ops4j.pax.carrot.api.CarrotException;
-import org.ops4j.pax.carrot.api.FixtureFactory;
+import org.ops4j.pax.carrot.api.ExecutionContext;
 import org.ops4j.pax.carrot.api.Interpreter;
-import org.ops4j.pax.carrot.api.InterpreterSelector;
 import org.ops4j.pax.carrot.api.Item;
 import org.ops4j.pax.carrot.api.Specification;
 import org.ops4j.pax.carrot.api.Statistics;
-import org.ops4j.pax.carrot.el.ELExecutionContext;
-import org.ops4j.pax.carrot.fixture.ClassPathFixtureFactory;
 import org.ops4j.pax.carrot.html.DocumentProcessor;
 import org.ops4j.pax.carrot.html.HtmlSpecification;
 import org.ops4j.pax.carrot.html.fit.FitCompatibilityProcessor;
-import org.ops4j.pax.carrot.interpreter.DefaultInterpreterSelector;
 import org.ops4j.pax.carrot.runner.listener.DefaultRunnerListener;
 import org.ops4j.pax.carrot.runner.listener.RunnerListener;
-import org.ops4j.spi.ServiceProviderFinder;
-
-import de.odysseus.el.ExpressionFactoryImpl;
 
 
 /**
@@ -71,48 +63,21 @@ public class FileRunner {
 
     private RunnerListener listener;
 
-    private FixtureFactory fixtureLoader;
-
-    private InterpreterSelector interpreterSelector = new DefaultInterpreterSelector(fixtureLoader);
-
     private String filter;
 
-    private ELExecutionContext context;
+    private ExecutionContext context;
 
-    public FileRunner(File inputDir, File outputDir, String testPath) {
-        this(inputDir, outputDir, testPath, new DefaultRunnerListener());
+    public FileRunner(ExecutionContext context, File inputDir, File outputDir, String testPath) {
+        this(context, inputDir, outputDir, testPath, new DefaultRunnerListener());
     }
 
-    public FileRunner(File inputDir, File outputDir, String testPath, RunnerListener listener) {
+    public FileRunner(ExecutionContext context, File inputDir, File outputDir, String testPath, RunnerListener listener) {
+        this.context = context;
         this.inputDir = inputDir;
         this.outputDir = outputDir;
         this.testPath = testPath;
         this.listener = listener;
 
-        List<FixtureFactory> factories = ServiceProviderFinder
-                .findServiceProviders(FixtureFactory.class);
-        fixtureLoader = factories.isEmpty() ? new ClassPathFixtureFactory() : factories.get(0);
-
-        ExpressionFactoryImpl factory = new ExpressionFactoryImpl();
-        context = new ELExecutionContext(factory, fixtureLoader);
-        fixtureLoader.setContext(context);
-
-        interpreterSelector = new DefaultInterpreterSelector(fixtureLoader);
-    }
-
-    public FileRunner(File inputDir, File outputDir, String testPath, FixtureFactory fixtureFactory) {
-        this.inputDir = inputDir;
-        this.outputDir = outputDir;
-        this.testPath = testPath;
-        this.listener = new DefaultRunnerListener();
-
-        this.fixtureLoader = fixtureFactory;
-
-        ExpressionFactoryImpl factory = new ExpressionFactoryImpl();
-        context = new ELExecutionContext(factory, fixtureLoader);
-        fixtureLoader.setContext(context);
-
-        interpreterSelector = new DefaultInterpreterSelector(fixtureLoader);
     }
 
     /**
@@ -179,7 +144,7 @@ public class FileRunner {
     private void runSpecification(Specification specification) {
         listener.beforeTest(testPath);
         for (Item table : specification) {
-            Interpreter interpreter = interpreterSelector.selectInterpreter(table);
+            Interpreter interpreter = context.getInterpreterSelector().selectInterpreter(table);
             interpreter.interpret(table, result);
         }
         listener.afterTest(result);

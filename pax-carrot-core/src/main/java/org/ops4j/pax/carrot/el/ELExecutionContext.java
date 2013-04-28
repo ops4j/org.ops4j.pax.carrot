@@ -24,6 +24,7 @@ import javax.el.ValueExpression;
 
 import org.ops4j.pax.carrot.api.ExecutionContext;
 import org.ops4j.pax.carrot.api.FixtureFactory;
+import org.ops4j.pax.carrot.api.InterpreterSelector;
 import org.ops4j.pax.carrot.api.Statistics;
 
 import de.odysseus.el.util.SimpleContext;
@@ -42,12 +43,14 @@ public class ELExecutionContext extends SimpleContext implements ExecutionContex
 
     private ExpressionFactory factory;
     private FixtureFactory fixtureFactory;
+    private InterpreterSelector interpreterSelector;
     private boolean stopOnFirstFailure;
 
-    public ELExecutionContext(ExpressionFactory factory, FixtureFactory fixtureFactory) {
+    public ELExecutionContext(ExpressionFactory factory, FixtureFactory fixtureFactory, InterpreterSelector interpreterSelector) {
         super(new CarrotELResolver());
         this.factory = factory;
         this.fixtureFactory = fixtureFactory;
+        this.interpreterSelector = interpreterSelector;
     }
 
     public void setVariable(String symbol, Object value) {
@@ -97,5 +100,10 @@ public class ELExecutionContext extends SimpleContext implements ExecutionContex
     @Override
     public boolean canContinue(Statistics stats) {
         return !shouldStop(stats);
+    }
+
+    @Override
+    public InterpreterSelector getInterpreterSelector() {
+        return interpreterSelector;
     }
 }

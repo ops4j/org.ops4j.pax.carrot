@@ -25,7 +25,9 @@ import java.io.File;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.ops4j.pax.carrot.api.ExecutionContext;
 import org.ops4j.pax.carrot.api.Statistics;
+import org.ops4j.pax.carrot.runner.DefaultExecutionContextFactory;
 import org.ops4j.pax.carrot.runner.FileRunner;
 
 
@@ -35,8 +37,11 @@ public class FileRunnerTest {
 
     private File outputDir;
 
+    private ExecutionContext context;
+
     @Before
     public void setUp() {
+        context = new DefaultExecutionContextFactory().newInstance();
         inputDir = new File("src/test/carrot");
         outputDir = new File("target/carrot");
         outputDir.mkdirs();
@@ -44,7 +49,7 @@ public class FileRunnerTest {
 
     @Test
     public void runCalculatorTest() {
-        FileRunner runner = new FileRunner(inputDir, outputDir, "calculator/calculator.html");
+        FileRunner runner = new FileRunner(context, inputDir, outputDir, "calculator/calculator.html");
         runner.run();
         Statistics stats = runner.getResult();
         assertThat(stats.totalCount(), is(6));
@@ -56,7 +61,7 @@ public class FileRunnerTest {
 
     @Test
     public void runCalculatorTestWithFilter() {
-        FileRunner runner = new FileRunner(inputDir, outputDir,
+        FileRunner runner = new FileRunner(context, inputDir, outputDir,
                 "calculator/calculatorFiltered.html");
         runner.setFilter("#{row.a == 2 and row.b == 3}");
         runner.run();
@@ -71,7 +76,7 @@ public class FileRunnerTest {
 
     @Test
     public void runStatesTest() {
-        FileRunner runner = new FileRunner(inputDir, outputDir, "states/states.html");
+        FileRunner runner = new FileRunner(context, inputDir, outputDir, "states/states.html");
         runner.run();
         Statistics stats = runner.getResult();
         assertThat(stats.totalCount(), is(98));
@@ -83,7 +88,7 @@ public class FileRunnerTest {
 
     @Test
     public void runGreeterTest() {
-        FileRunner runner = new FileRunner(inputDir, outputDir, "greeter/greeter.html");
+        FileRunner runner = new FileRunner(context, inputDir, outputDir, "greeter/greeter.html");
         runner.run();
         Statistics stats = runner.getResult();
         assertThat(stats.totalCount(), is(1));

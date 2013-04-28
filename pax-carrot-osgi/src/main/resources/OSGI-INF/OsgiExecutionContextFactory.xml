@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" name="OsgiExecutionContextFactory">
+   <implementation class="org.ops4j.pax.carrot.osgi.OsgiExecutionContextFactory"/>
+   <service>
+      <provide interface="org.ops4j.pax.carrot.api.ExecutionContextFactory"/>
+   </service>
+   <property name="type" type="String" value="osgi"/>
+   <reference bind="setExpressionFactory" cardinality="1..1" interface="javax.el.ExpressionFactory" name="ExpressionFactory" policy="static"/>
+   <reference bind="setFixtureFactory" cardinality="1..1" interface="org.ops4j.pax.carrot.api.FixtureFactory" name="FixtureFactory" policy="static"/>
+</scr:component>

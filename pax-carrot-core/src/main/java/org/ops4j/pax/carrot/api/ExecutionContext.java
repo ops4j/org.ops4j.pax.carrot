@@ -25,6 +25,8 @@ public interface ExecutionContext {
     Object getVariable(String symbol);
     
     FixtureFactory getFixtureFactory();
+    
+    InterpreterSelector getInterpreterSelector();
 
     void setStopOnFirstFailure(boolean stop);
 

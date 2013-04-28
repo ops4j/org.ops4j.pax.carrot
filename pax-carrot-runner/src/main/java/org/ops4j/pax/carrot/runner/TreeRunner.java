@@ -23,6 +23,7 @@ import java.util.Arrays;
 
 import org.codehaus.plexus.util.DirectoryScanner;
 import org.ops4j.pax.carrot.api.CarrotException;
+import org.ops4j.pax.carrot.api.ExecutionContext;
 import org.ops4j.pax.carrot.api.Statistics;
 import org.ops4j.pax.carrot.runner.listener.DefaultRunnerListener;
 import org.ops4j.pax.carrot.runner.listener.RunnerListener;
@@ -107,7 +108,8 @@ public class TreeRunner {
 
     private void runSingleTest(String testPath) {
         listener.beforeTest(testPath);
-        FileRunner runner = new FileRunner(inputDir, outputDir, testPath);
+        ExecutionContext context = new DefaultExecutionContextFactory().newInstance();
+        FileRunner runner = new FileRunner(context, inputDir, outputDir, testPath);
         boolean passed = runner.run();
         success &= passed;
 
