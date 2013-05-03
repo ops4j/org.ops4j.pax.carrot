@@ -21,6 +21,8 @@ package org.ops4j.pax.carrot.sample1;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.inject.Named;
+
 import org.ops4j.pax.carrot.annotation.CollectionProvider;
 
 
@@ -28,6 +30,7 @@ import org.ops4j.pax.carrot.annotation.CollectionProvider;
  * @author Harald Wellmann
  *
  */
+@Named
 public class States {
     
     private static String[][] rawStates = {
