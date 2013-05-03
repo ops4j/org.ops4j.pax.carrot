@@ -20,6 +20,7 @@
         <pax.exam.version>3.0.3</pax.exam.version>
         <pax.swissbox.version>1.6.0</pax.swissbox.version>
         <pax.url.version>1.5.0</pax.url.version>
+        <richfaces.version>4.3.1.Final</richfaces.version>
         <slf4j.version>1.7.5</slf4j.version>
         <spring.version>3.2.2.RELEASE</spring.version>
         <pax.carrot.wiki.url>http://team.ops4j.org/wiki/display/paxcarrot/</pax.carrot.wiki.url>

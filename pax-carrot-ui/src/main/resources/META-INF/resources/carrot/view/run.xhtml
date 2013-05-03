@@ -1,0 +1,17 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" 
+  xmlns:f="http://java.sun.com/jsf/core"
+  xmlns:h="http://java.sun.com/jsf/html"
+  xmlns:ui="http://java.sun.com/jsf/facelets"
+  xmlns:carrot="http://java.sun.com/jsf/composite/carrot" 
+  template="/carrot/template/default.xhtml">
+  
+  <ui:define name="title">Pax Carrot</ui:define> 
+  
+  <h3>Test Output: #{treeBean.relativePath}</h3>
+
+  <div class="test-content">
+    <h:outputText escape="false" value="#{runnerController.output}" />
+  </div>
+
+
+</ui:composition>

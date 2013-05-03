@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:carrot="http://java.sun.com/jsf/composite/carrot">
+<h:head>
+    <meta
+        http-equiv="Content-Type"
+        content="text/html; charset=UTF-8" />
+    <title>Pax Carrot - <ui:insert name="title">Seitentitel</ui:insert></title>
+    <h:outputStylesheet
+        library="bootstrap"
+        name="css/bootstrap.css" />
+</h:head>
+
+
+
+<h:body>
+
+    <f:view contentType="text/html">
+        <ui:insert name="metadata" />
+    </f:view>
+
+    <ui:debug />
+    <div class="row-fluid header">
+        <div class="span1"></div>
+        <div class="span10">
+            <carrot:navigation />
+        </div>
+        <div class="span1"></div>
+    </div>
+    <div class="row-fluid main">
+        <div class="span1"></div>
+        <div class="span3">
+            <carrot:tree />
+        </div>
+        <div class="span7 content">
+            <ui:insert />
+        </div>
+        <div class="span1"></div>
+    </div>
+</h:body>
+</html>

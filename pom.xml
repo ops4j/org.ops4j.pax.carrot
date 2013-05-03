@@ -25,13 +25,16 @@
         
         <module>pax-carrot-core</module>
         <module>pax-carrot-html</module>
+        <module>pax-carrot-javaee</module>
+        <module>pax-carrot-junit</module>
+        <module>pax-carrot-osgi</module>
         <module>pax-carrot-runner</module>
         <module>pax-carrot-spring</module>
-        <module>pax-carrot-junit</module>
+        <module>pax-carrot-ui</module>
+
         <module>pax-carrot-samples</module>
+
         <module>pax-carrot-itest</module>
-        <module>pax-carrot-osgi</module>
-        <module>pax-carrot-javaee</module>
         <module>pax-carrot-itest-javaee</module>
     </modules>
 

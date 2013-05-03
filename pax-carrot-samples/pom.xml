@@ -13,6 +13,7 @@
 
   <modules>
       <module>pax-carrot-sample1</module>
+      <module>pax-carrot-sample1-war</module>
       <module>pax-carrot-sample2</module>
   </modules>
 

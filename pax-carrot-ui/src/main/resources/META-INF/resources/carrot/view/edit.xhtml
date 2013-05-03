@@ -1,0 +1,33 @@
+<ui:composition
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:rich="http://richfaces.org/rich"
+    xmlns:carrot="http://java.sun.com/jsf/composite/carrot"
+    template="/carrot/template/default.xhtml">
+
+    <ui:define name="title">Pax Carrot</ui:define>
+
+    <h3>Edit #{treeBean.relativePath}</h3>
+
+    <h:form id="editForm">
+        <rich:editor
+            value="#{editor.content}"
+            height="550"
+            toolbar="full">
+            <f:facet name="config">
+              autoParagraph : false,
+              fillEmptyBlocks : false,
+              ignoreEmptyParagraph : true
+            </f:facet>
+        </rich:editor>
+        <h:commandButton
+            action="#{editor.save}"
+            value="Save" />
+        <h:commandButton
+            action="#{editor.cancel}"
+            value="Cancel" />
+    </h:form>
+
+</ui:composition>
