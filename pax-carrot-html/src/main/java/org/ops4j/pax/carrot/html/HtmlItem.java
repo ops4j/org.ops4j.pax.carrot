@@ -62,7 +62,7 @@ public class HtmlItem implements Item {
          */
         if (elem.childNodeSize() == 1 && (elem.childNode(0) instanceof TextNode)) {
             TextNode textNode = (TextNode) elem.childNode(0);
-            return textNode.getWholeText();
+            return textNode.getWholeText().trim();
         }
         else {
             return elem.text();
