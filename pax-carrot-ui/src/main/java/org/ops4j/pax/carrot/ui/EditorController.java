@@ -38,7 +38,7 @@ import com.google.common.io.Files;
 @Named("editor")
 public class EditorController {
 
-    private static final Charset utf8 = Charset.forName("UTF-8");
+    private static final Charset UTF8 = Charset.forName("UTF-8");
     
     @Inject
     private TreeBean treeBean;
@@ -53,7 +53,7 @@ public class EditorController {
         }
         content = "";
         try {
-            content = Files.toString(file, utf8);
+            content = Files.toString(file, UTF8);
         }
         catch (IOException e) {
             // TODO Auto-generated catch block
@@ -83,7 +83,7 @@ public class EditorController {
 
         file = treeBean.getSelectedFile();
         try {
-            Files.write(content, file, utf8);
+            Files.write(content, file, UTF8);
         }
         catch (IOException exc) {
             throw new CarrotException(exc);
