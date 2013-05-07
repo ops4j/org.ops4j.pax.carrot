@@ -13,16 +13,17 @@
         <div class="row-fluid tree">
             <h:form>
 
-                <rich:tree
-                    id="fileTree"
+                <rich:tree 
+                    id="fileTree" 
                     var="item"
                     toggleType="ajax"
                     selectionType="ajax"
+                    selection="#{treeBean.currentSelection}"
                     selectionChangeListener="#{treeBean.selectionChanged}">
-                    <rich:treeModelRecursiveAdaptor
+                    <rich:treeModelRecursiveAdaptor 
                         roots="#{treeBean.roots}"
                         nodes="#{item.directories}">
-                        <rich:treeNode expanded="#{item.expanded}">
+                        <rich:treeNode expanded="#{item.expanded}" >
                             <h:link outcome="browse">
                                 <f:param
                                     name="file"
