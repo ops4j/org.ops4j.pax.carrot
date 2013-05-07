@@ -1,0 +1,10 @@
+/* Tree selection background same as toolbar */
+.tree .rf-trn-sel {
+    background: none repeat scroll 0 0 #D4CFC7;
+}
+
+/* More padding in test output */
+.test-content td {
+    padding: 5px;
+}
+
