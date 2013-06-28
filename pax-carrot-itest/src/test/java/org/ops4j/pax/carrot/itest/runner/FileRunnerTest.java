@@ -97,4 +97,16 @@ public class FileRunnerTest {
         assertThat(stats.getNumIgnored(), is(0));
         assertThat(stats.getNumException(), is(0));
     }
+
+    @Test
+    public void runWhiteSpaceTest() {
+        FileRunner runner = new FileRunner(context, inputDir, outputDir, "text/whitespace.html");
+        runner.run();
+        Statistics stats = runner.getResult();
+        assertThat(stats.totalCount(), is(22));
+        assertThat(stats.getNumRight(), is(14));
+        assertThat(stats.getNumWrong(), is(8));
+        assertThat(stats.getNumIgnored(), is(0));
+        assertThat(stats.getNumException(), is(0));
+    }
 }

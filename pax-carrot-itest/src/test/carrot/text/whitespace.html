@@ -1,0 +1,65 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Action Interpreter Tests</title>
+</head>
+<body>
+    <h1>Whitespace Tests</h1>
+    
+    <p>Leading and trailing whitespace in table cells gets trimmed by the HTML parser.
+    Using the HTML escape &amp;nbsp; does not help, as SPACE (U+0020) is not equal to NON-BREAKING SPACE (U+00A0).</p>
+    
+    <p>If leading of trailing whitespace is significant in tests, fixtures and test tables should
+    both wrap the actual and expected test with suitable delimiters, e.g. "[" and "]".</p>
+     
+    
+    
+    <table border="1" cellspacing="0">
+        <tr>
+            <td>set of</td>
+            <td colspan="2">org.ops4j.pax.carrot.sample1.WhitespaceText</td>
+        </tr>
+        <tr>
+            <td>id</td>
+            <td>text</td>
+        </tr>
+        <tr>
+            <td>1</td>
+            <td>none</td>
+        </tr>
+        <tr>
+            <td>2</td>
+            <td>&nbsp;&nbsp;leading spaces</td>
+        </tr>
+        <tr>
+            <td>3</td>
+            <td>trailing spaces  </td>
+        </tr>
+        <tr>
+            <td>4</td>
+            <td>&#x00A0;leading non-breaking space</td>
+        </tr>
+        <tr>
+            <td>5</td>
+            <td>trailing non-breaking space&#x00A0;</td>
+        </tr>
+        <tr>
+            <td>6</td>
+            <td>[&#x0020;&#x0020;leading spaces]</td>
+        </tr>
+        <tr>
+            <td>7</td>
+            <td>[trailing spaces&#x0020;&#x0020;]</td>
+        </tr>
+        <tr>
+            <td>8</td>
+            <td>[&#x00A0;leading non-breaking space]</td>
+        </tr>
+        <tr>
+            <td>9</td>
+            <td>[trailing non-breaking space&#x00A0;]</td>
+        </tr>
+    </table>
+</body>
+</html>
