@@ -23,15 +23,28 @@ import org.ops4j.pax.carrot.api.ExecutionContext;
 import org.ops4j.pax.carrot.api.FixtureFactory;
 import org.ops4j.pax.carrot.fixture.BeanFixture;
 import org.ops4j.pax.carrot.fixture.Fixture;
+import org.springframework.context.ApplicationContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestContextManager;
 
 /**
- * A fixture loader which performs Spring dependency injection on all fixtures annotated with
- * {@link ContextConfiguration}, using a Spring Test Context.
- * 
- * For classes without a {@link ContextConfiguration} annotation, this loader defaults to the
- * standard {@link FixtureLoader} behaviour.
+ * A fixture loader which produces Spring beans or, failing that, unmanaged fixtures with injection
+ * points satisfied from a given Spring application context.
+ * <p>
+ * The {@link TestContextManager} is used to obtain an application context, based on a
+ * {@link ContextConfiguration} annotation, either on a fixture class or on a test suite class.
+ * <p>
+ * At first, if the configuration object of the {@link ExecutionContext} is of type {@code Class}, and if this
+ * class has a {@code ContextConfiguration} annotation, then the factory creates a test context for this
+ * class and uses the corresponding application context to look up a fixture bean by name. On success,
+ * this bean is returned to the caller.
+ * <p>
+ * Otherwise, the given fixture name is interpreted
+ * as a class name as a fall-back. The factory then loads the class via the thread context 
+ * class loader and creates an instance. 
+ * <p>
+ * If the fixture class has a {@link ContextConfiguration} annotation, then the factory creates a test context for this
+ * klass and prepares the corresponding test instance, which includes dependency injection from the application context. 
  * 
  * @author Harald Wellmann
  * 
@@ -44,26 +57,48 @@ public class SpringTestContextFixtureLoader implements FixtureFactory {
      * Creates an instance of a fixture class and performs Spring dependency injection if class is
      * annotated with {@link ContextConfiguration}.
      * 
-     * @param fixtureClassName
-     *            name of fixture class
+     * @param fixtureClassName name of fixture class
      */
     @Override
     public Fixture createFixture(String fixtureName) {
-        Object target = createTarget(fixtureName);
-        Class<?> klass = target.getClass();
         try {
-            ContextConfiguration cc = klass.getAnnotation(ContextConfiguration.class);
-            if (cc != null) {
-                TestContextManager contextManager = new TestContextManager(klass);
-                contextManager.prepareTestInstance(target);
+            Object target = lookupBeanByName(fixtureName);
+            if (target == null) {
+                target = createTarget(fixtureName);
+                Class<?> klass = target.getClass();
+                ContextConfiguration cc = klass.getAnnotation(ContextConfiguration.class);
+                if (cc != null) {
+                    TestContextManager contextManager = new TestContextManager(klass);
+                    contextManager.prepareTestInstance(target);
+                }
             }
             BeanFixture fixture = new BeanFixture(target, context);
             return fixture;
         }
         // CHECKSTYLE:SKIP : Spring API
         catch (Exception exc) {
-            throw new CarrotException("dependency injection failed for " + klass.getName(), exc);
+            throw new CarrotException("dependency injection failed for " + fixtureName, exc);
         }
+    }
+
+    private Object lookupBeanByName(String fixtureName) throws Exception {
+
+        if (context.getConfiguration() instanceof Class<?>) {
+            Class<?> configClass = (Class<?>) context.getConfiguration();
+            ContextConfiguration cc = configClass.getAnnotation(ContextConfiguration.class);
+            if (cc != null) {
+                TestContextManager contextManager = new TestContextManager(configClass);
+                ApplicationContextHolder applicationContextHolder = new ApplicationContextHolder();
+                contextManager.registerTestExecutionListeners(applicationContextHolder);
+                contextManager.prepareTestInstance(configClass.newInstance());
+                ApplicationContext applicationContext = applicationContextHolder
+                        .getApplicationContext();
+                if (applicationContext.containsBean(fixtureName)) {
+                    return applicationContext.getBean(fixtureName);
+                }
+            }
+        }
+        return null;
     }
 
     private Object createTarget(String fixtureName) {
@@ -85,8 +120,7 @@ public class SpringTestContextFixtureLoader implements FixtureFactory {
     }
 
     /**
-     * @param context
-     *            the context to set
+     * @param context the context to set
      */
     public void setContext(ExecutionContext context) {
         this.context = context;

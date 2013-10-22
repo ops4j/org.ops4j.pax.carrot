@@ -42,12 +42,14 @@ public class ELExecutionContext extends CarrotELContext implements ExecutionCont
     private ExpressionFactory factory;
     private FixtureFactory fixtureFactory;
     private InterpreterSelector interpreterSelector;
+    private Object configuration;
     private boolean stopOnFirstFailure;
 
-    public ELExecutionContext(ExpressionFactory factory, FixtureFactory fixtureFactory, InterpreterSelector interpreterSelector) {
+    public ELExecutionContext(ExpressionFactory factory, FixtureFactory fixtureFactory, InterpreterSelector interpreterSelector, Object configuration) {
         this.factory = factory;
         this.fixtureFactory = fixtureFactory;
         this.interpreterSelector = interpreterSelector;
+        this.configuration = configuration;
     }
 
     public void setVariable(String symbol, Object value) {
@@ -102,5 +104,10 @@ public class ELExecutionContext extends CarrotELContext implements ExecutionCont
     @Override
     public InterpreterSelector getInterpreterSelector() {
         return interpreterSelector;
+    }
+
+    @Override
+    public Object getConfiguration() {
+        return configuration;
     }
 }

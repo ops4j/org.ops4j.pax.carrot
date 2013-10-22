@@ -71,7 +71,7 @@ public class RunnerController {
             return "run";
         }
         
-        FileRunner runner = new FileRunner(ecf.newInstance(), inputDir, outputDir, test);
+        FileRunner runner = new FileRunner(ecf.newInstance(null), inputDir, outputDir, test);
         runner.run();
         return "run";
     }

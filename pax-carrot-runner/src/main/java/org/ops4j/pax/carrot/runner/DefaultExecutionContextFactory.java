@@ -40,17 +40,16 @@ import org.ops4j.spi.ServiceProviderFinder;
 public class DefaultExecutionContextFactory implements ExecutionContextFactory {
 
     @Override
-    public ExecutionContext newInstance() {
+    public ExecutionContext newInstance(Object configuration) {
         List<FixtureFactory> factories = ServiceProviderFinder
             .findServiceProviders(FixtureFactory.class);
         FixtureFactory fixtureLoader = factories.isEmpty() ? new ClassPathFixtureFactory() : factories.get(0);
         
         InterpreterSelector interpreterSelector = new DefaultInterpreterSelector(fixtureLoader);
         ExpressionFactory factory = ExpressionFactory.newInstance();
-        ELExecutionContext context = new ELExecutionContext(factory, fixtureLoader, interpreterSelector);
+        ELExecutionContext context = new ELExecutionContext(factory, fixtureLoader, interpreterSelector, configuration);
         fixtureLoader.setContext(context);
 
         return context;
     }
-
 }

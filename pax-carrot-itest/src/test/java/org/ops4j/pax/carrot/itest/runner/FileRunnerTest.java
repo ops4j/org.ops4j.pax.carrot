@@ -41,7 +41,7 @@ public class FileRunnerTest {
 
     @Before
     public void setUp() {
-        context = new DefaultExecutionContextFactory().newInstance();
+        context = new DefaultExecutionContextFactory().newInstance(null);
         inputDir = new File("src/test/carrot");
         outputDir = new File("target/carrot");
         outputDir.mkdirs();

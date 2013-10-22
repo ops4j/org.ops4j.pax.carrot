@@ -24,5 +24,11 @@ package org.ops4j.pax.carrot.api;
  *
  */
 public interface ExecutionContextFactory {
-    ExecutionContext newInstance();
+    
+    /**
+     * Creates a new {@link ExecutionContext}.
+     * @param configuration implementation dependent configuration object (possibly null).
+     * @return execution context
+     */
+    ExecutionContext newInstance(Object configuration);
 }

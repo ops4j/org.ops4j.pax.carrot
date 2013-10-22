@@ -108,7 +108,7 @@ public class OsgiFileRunnerTest {
         assertThat(bc, is(notNullValue()));
         assertThat(ecf, is(notNullValue()));
 
-        FileRunner runner = new FileRunner(ecf.newInstance(), inputDir, outputDir, "calculator/calculator.html");
+        FileRunner runner = new FileRunner(ecf.newInstance(null), inputDir, outputDir, "calculator/calculator.html");
         runner.run();
         Statistics stats = runner.getResult();
         assertThat(stats.totalCount(), is(6));

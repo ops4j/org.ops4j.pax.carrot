@@ -57,7 +57,7 @@ public class JavaeeFileRunnerTest {
 
     @Test
     public void runCalculatorTest() {
-        FileRunner runner = new FileRunner(ecf.newInstance(), inputDir, outputDir, "calculator/calculator.html");
+        FileRunner runner = new FileRunner(ecf.newInstance(null), inputDir, outputDir, "calculator/calculator.html");
         runner.run();
         Statistics stats = runner.getResult();
         assertThat(stats.totalCount(), is(6));

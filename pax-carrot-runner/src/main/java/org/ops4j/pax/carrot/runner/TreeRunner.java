@@ -108,7 +108,7 @@ public class TreeRunner {
 
     private void runSingleTest(String testPath) {
         listener.beforeTest(testPath);
-        ExecutionContext context = new DefaultExecutionContextFactory().newInstance();
+        ExecutionContext context = new DefaultExecutionContextFactory().newInstance(null);
         FileRunner runner = new FileRunner(context, inputDir, outputDir, testPath);
         boolean passed = runner.run();
         success &= passed;

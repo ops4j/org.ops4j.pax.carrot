@@ -24,6 +24,7 @@ import org.junit.runner.Description;
 import org.junit.runner.Runner;
 import org.junit.runner.notification.Failure;
 import org.junit.runner.notification.RunNotifier;
+import org.junit.runners.model.TestClass;
 import org.ops4j.pax.carrot.api.ExecutionContext;
 import org.ops4j.pax.carrot.api.Statistics;
 import org.ops4j.pax.carrot.runner.DefaultExecutionContextFactory;
@@ -57,10 +58,11 @@ class CarrotRunner extends Runner implements RunnerListener {
      * @param testPath  relative path of test (or test output) under 
      *                  inputDir (or outputDir), respectively
      * @param listener  listener to be notified of the results.
+     * @param testClass the test class for which this runner is created
      */
-    public CarrotRunner(File inputDir, File outputDir, String testPath, RunnerListener listener) {
+    public CarrotRunner(File inputDir, File outputDir, String testPath, RunnerListener listener, TestClass testClass) {
         this.description = Description.createSuiteDescription(testPath);
-        ExecutionContext context = new DefaultExecutionContextFactory().newInstance();
+        ExecutionContext context = new DefaultExecutionContextFactory().newInstance(testClass.getJavaClass());
         this.fileRunner = new FileRunner(context, inputDir, outputDir, testPath, this);
         this.listener = listener;
     }

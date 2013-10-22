@@ -43,9 +43,9 @@ public class JavaeeExecutionContextFactory implements ExecutionContextFactory {
     private ExpressionFactory expressionFactory = ExpressionFactory.newInstance();
 
     @Override
-    public ExecutionContext newInstance() {
+    public ExecutionContext newInstance(Object configuration) {
         InterpreterSelector interpreterSelector = new DefaultInterpreterSelector(fixtureFactory);
-        ELExecutionContext context = new ELExecutionContext(expressionFactory, fixtureFactory, interpreterSelector);
+        ELExecutionContext context = new ELExecutionContext(expressionFactory, fixtureFactory, interpreterSelector, configuration);
         fixtureFactory.setContext(context);
 
         return context;

@@ -123,7 +123,7 @@ public class CarrotSuite extends Suite {
             Arrays.sort(files);
             for (String testPath : files) {
                 CarrotRunner runner = new CarrotRunner(inputDirectory, outputDirectory, testPath,
-                        listener);
+                        listener, getTestClass());
                 runners.add(runner);
             }
 

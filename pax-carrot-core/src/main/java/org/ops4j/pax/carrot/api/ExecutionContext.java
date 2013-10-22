@@ -34,4 +34,10 @@ public interface ExecutionContext {
 
     boolean canContinue(Statistics stats);
     
+    /**
+     * An optional implementation dependent configuration object. 
+     * @return configuration object (or null)
+     */
+    Object getConfiguration();
+    
 }
