@@ -46,15 +46,12 @@ public class ActionInterpreter implements Interpreter {
 
     protected Statistics statistics = new Statistics();
 
-    private Fixture fixture;
-
     private Fixture currentFixture;
 
     private ExecutionContext carrotContext;
 
-    public ActionInterpreter(Fixture fixture) {
-        this.fixture = fixture;
-        this.carrotContext = fixture.getContext();
+    public ActionInterpreter(ExecutionContext context) {
+        this.carrotContext = context;
     }
 
     public Statistics statistics() {
@@ -89,7 +86,7 @@ public class ActionInterpreter implements Interpreter {
     private void processStartRow(Item cell) {
         try {
             String fixtureName = cell.text();
-            FixtureFactory fixtureFactory = fixture.getContext().getFixtureFactory();
+            FixtureFactory fixtureFactory = carrotContext.getFixtureFactory();
             currentFixture = fixtureFactory.createFixture(fixtureName);
         }
         catch (CarrotException exc) {

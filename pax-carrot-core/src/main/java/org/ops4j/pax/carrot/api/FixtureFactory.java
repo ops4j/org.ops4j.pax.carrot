@@ -39,4 +39,6 @@ public interface FixtureFactory {
     
     void setContext(ExecutionContext context);
     
+    ExecutionContext getContext();
+    
 }

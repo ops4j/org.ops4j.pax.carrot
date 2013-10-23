@@ -64,4 +64,9 @@ public class JavaeeFixtureFactory implements FixtureFactory {
     public void setContext(ExecutionContext context) {
         this.executionContext = context;
     }
+
+    @Override
+    public ExecutionContext getContext() {
+        return executionContext;
+    }
 }

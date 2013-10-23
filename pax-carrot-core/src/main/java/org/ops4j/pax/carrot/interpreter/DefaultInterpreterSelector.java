@@ -18,6 +18,7 @@
 
 package org.ops4j.pax.carrot.interpreter;
 
+import org.jsoup.helper.StringUtil;
 import org.ops4j.pax.carrot.api.FixtureFactory;
 import org.ops4j.pax.carrot.api.Interpreter;
 import org.ops4j.pax.carrot.api.InterpreterSelector;
@@ -42,9 +43,11 @@ public class DefaultInterpreterSelector implements InterpreterSelector {
 
         String interpreterName = cells.at(0).text();
         try {
-            String fixtureName = cells.at(1).text();
-            Fixture fixture = fixtureFactory.createFixture(fixtureName);
-            return createInterpreter(interpreterName, fixture);
+            String fixtureName = null;
+            if (cells.at(0).hasSiblings()) {
+                fixtureName = cells.at(1).text();
+            }
+            return createInterpreter(interpreterName, fixtureName);
         }
         // CHECKSTYLE:SKIP
         catch (Throwable t) {
@@ -53,15 +56,23 @@ public class DefaultInterpreterSelector implements InterpreterSelector {
         }
     }
 
-    private Interpreter createInterpreter(String interpreterName, Fixture fixture) {
+    private Interpreter createInterpreter(String interpreterName, String fixtureName) {
+        // action interpreter does not require a fixture name in the first row
+        if (interpreterName.equals("action")) {
+            return new ActionInterpreter(fixtureFactory.getContext());
+        }
+        
+        // all other interpreters do require a fixture name
+        if (StringUtil.isBlank(fixtureName)) {
+            throw new IllegalArgumentException("fixture name required");
+        }
+        
+        Fixture fixture = fixtureFactory.createFixture(fixtureName);
         if (interpreterName.equals("rules for")) {
             return new RuleForInterpreter(fixture);
         }
         if (interpreterName.equals("set of")) {
             return new SetOfInterpreter(fixture);
-        }
-        if (interpreterName.equals("action")) {
-            return new ActionInterpreter(fixture);
         }
         return new NoOpInterpreter();
     }

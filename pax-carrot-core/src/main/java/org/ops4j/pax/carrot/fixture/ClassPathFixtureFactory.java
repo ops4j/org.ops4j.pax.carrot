@@ -53,4 +53,10 @@ public class ClassPathFixtureFactory implements FixtureFactory {
     public void setContext(ExecutionContext context) {
         this.context = context;
     }
+
+
+    @Override
+    public ExecutionContext getContext() {
+        return context;
+    }
 }
