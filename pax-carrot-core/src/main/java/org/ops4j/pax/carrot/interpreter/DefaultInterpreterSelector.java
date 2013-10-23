@@ -68,7 +68,7 @@ public class DefaultInterpreterSelector implements InterpreterSelector {
         }
         
         Fixture fixture = fixtureFactory.createFixture(fixtureName);
-        if (interpreterName.equals("rules for")) {
+        if (interpreterName.matches("rule(s?) for")) {
             return new RuleForInterpreter(fixture);
         }
         if (interpreterName.equals("set of")) {
