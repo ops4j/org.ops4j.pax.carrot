@@ -23,6 +23,7 @@ import static org.ops4j.pax.carrot.step.Actions.markItem;
 import static org.ops4j.pax.carrot.step.Actions.markStopped;
 import static org.ops4j.pax.carrot.step.Actions.updateStatistics;
 
+import org.ops4j.pax.carrot.api.CarrotException;
 import org.ops4j.pax.carrot.api.ExecutionContext;
 import org.ops4j.pax.carrot.api.FixtureFactory;
 import org.ops4j.pax.carrot.api.Interpreter;
@@ -86,9 +87,16 @@ public class ActionInterpreter implements Interpreter {
      * @param row
      */
     private void processStartRow(Item cell) {
-        String fixtureName = cell.text();
-        FixtureFactory fixtureFactory = fixture.getContext().getFixtureFactory();
-        currentFixture = fixtureFactory.createFixture(fixtureName);
+        try {
+            String fixtureName = cell.text();
+            FixtureFactory fixtureFactory = fixture.getContext().getFixtureFactory();
+            currentFixture = fixtureFactory.createFixture(fixtureName);
+        }
+        catch (CarrotException exc) {
+            cell.mark(new ExceptionMarker(exc));
+            statistics.exception();
+            carrotContext.setStopOnFirstFailure(true);
+        }
     }
 
     /**
@@ -161,22 +169,11 @@ public class ActionInterpreter implements Interpreter {
 
     public void interpret(Item table, Statistics stats) {
         this.statistics = stats;
-        try {
-            for (Item row = table.at(0, 1); row != null; row = row.nextSibling()) {
-                processRow(row);
-                if (carrotContext.shouldStop(stats)) {
-                    markStopped(row.appendChild());
-                    break;
-                }
-            }
-        }
-        // CHECKSTYLE:SKIP
-        catch (Exception exc) {
-            stats.exception();
-            table.firstChild().mark(new ExceptionMarker(exc));
-
+        for (Item row = table.at(0, 1); row != null; row = row.nextSibling()) {
+            processRow(row);
             if (carrotContext.shouldStop(stats)) {
-                markStopped(table.appendChild());
+                markStopped(row.appendChild());
+                break;
             }
         }
     }
