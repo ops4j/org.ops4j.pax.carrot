@@ -146,6 +146,9 @@ public class FileRunner {
         for (Item table : specification) {
             Interpreter interpreter = context.getInterpreterSelector().selectInterpreter(table);
             interpreter.interpret(table, result);
+            if (!context.canContinue(result)) {
+                break;
+            }
         }
         listener.afterTest(result);
     }
