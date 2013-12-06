@@ -75,6 +75,18 @@ public class FileRunnerTest {
 
 
     @Test
+    public void runCalculatorTestWithAnnotations() {
+        FileRunner runner = new FileRunner(context, inputDir, outputDir, "calculator/calculatorAnnotations.html");
+        runner.run();
+        Statistics stats = runner.getResult();
+        assertThat(stats.totalCount(), is(6));
+        assertThat(stats.getNumRight(), is(3));
+        assertThat(stats.getNumWrong(), is(2));
+        assertThat(stats.getNumIgnored(), is(0));
+        assertThat(stats.getNumException(), is(1));
+    }
+
+    @Test
     public void runStatesTest() {
         FileRunner runner = new FileRunner(context, inputDir, outputDir, "states/states.html");
         runner.run();
