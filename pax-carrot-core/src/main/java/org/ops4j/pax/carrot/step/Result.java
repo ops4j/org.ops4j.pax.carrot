@@ -24,7 +24,7 @@ import org.hamcrest.Matcher;
  * The result of an {@link Invocation} applied to a fixture.
  * 
  * @author Harald Wellmann
- *
+ * 
  */
 public class Result {
 
@@ -33,8 +33,11 @@ public class Result {
     }
 
     private Matcher<?> matcher;
+
     private Object actual;
+
     private Throwable exception;
+
     private Status status;
 
     public Result() {
@@ -52,8 +55,13 @@ public class Result {
         return matcher;
     }
 
+    /**
+     * Returns the actual result or an empty string, if the result is null.
+     * 
+     * @return result or empty string
+     */
     public Object getActual() {
-        return actual;
+        return actual == null ? "" : actual;
     }
 
     public void setException(Throwable exception) {
@@ -72,7 +80,7 @@ public class Result {
             else if (matcher == null) {
                 status = Status.IGNORED;
             }
-            else if (matcher.matches(actual.toString())) {
+            else if (matcher.matches(getActual().toString())) {
                 status = Status.RIGHT;
             }
             else {
