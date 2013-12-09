@@ -79,7 +79,7 @@ public class HtmlMarkerRenderer {
 
     private void renderIgnoredMarker(IgnoredMarker marker, Element elem) {
         elem.attr("style", String.format("%s: %s;", BACKGROUND_COLOR, GREY));
-        elem.text(marker.getActual().toString());
+        elem.text(toString(marker.getActual()));
     }
 
     private void renderWrongMarker(WrongMarker marker, Element elem) {
@@ -103,5 +103,9 @@ public class HtmlMarkerRenderer {
 
     private void renderRightMarker(RightMarker marker, Element elem) {
         elem.attr("style", String.format("%s: %s;", BACKGROUND_COLOR, GREEN));
+    }
+    
+    private String toString(Object actual) {
+        return actual == null ? "" : actual.toString();
     }
 }
