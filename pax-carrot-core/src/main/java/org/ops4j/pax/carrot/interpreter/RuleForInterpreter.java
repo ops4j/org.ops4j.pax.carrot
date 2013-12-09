@@ -39,10 +39,12 @@ import org.ops4j.pax.carrot.fixture.Fixture;
 import org.ops4j.pax.carrot.invocation.Invocation;
 import org.ops4j.pax.carrot.invocation.MethodInvocation;
 import org.ops4j.pax.carrot.marker.ExceptionMarker;
+import org.ops4j.pax.carrot.marker.IgnoredMarker;
 import org.ops4j.pax.carrot.marker.StoppedMarker;
 import org.ops4j.pax.carrot.step.Actions;
 import org.ops4j.pax.carrot.step.Result;
 import org.ops4j.pax.carrot.step.Step;
+import org.ops4j.pax.carrot.step.Result.Status;
 
 /**
  * An interpreter which interprets the rows of a table as rules for a given fixture. Each table row
@@ -59,16 +61,19 @@ import org.ops4j.pax.carrot.step.Step;
  * <p>
  * The interpreter executes the following actions for each table row after the second row.
  * <ul>
- * <li>Any fixture class method annotated by {@code @BeforeRow} is invoked. If there is more than
- * one such method, the order of invocation is undefined.</li>
+ * <li>Any fixture class method annotated by {@code @BeforeRow} is invoked. The class (including its
+ * superclasses) may have at most one such method.</li>
  * 
  * <li>Traversing the row from left to right, for each cell belonging to a given column, the
  * interpreter sets the corresponding fixture property to the value contained in the cell, coercing
  * the type as required.</li>
  * 
  * <li>Any fixture class method annotated by {@code @BeforeFirstExpectation} is invoked after all
- * given columns are set and before the first expectation is queried. If there is more than one such
- * method, the order of invocation is undefined.</li>
+ * given columns are set and before the first expectation is queried. The class (including its
+ * superclasses) may have at most one such method.</li>
+ * 
+ * <li>If the {@code @BeforeFirstExpectation} method throws an exception, this exception will be
+ * marked in the following cell. All remaining cells of the current row will be marked as ignored.</li>
  * 
  * <li>For each cell belonging to an expected column, the interpreter gets the corresponding fixture
  * property value and compares it to the value contained in the cell, coercing the type as required.
@@ -76,8 +81,7 @@ import org.ops4j.pax.carrot.step.Step;
  * context.</li>
  * 
  * <li>Any fixture class method annotated by {@code @AfterRow} is invoked after all cells of the row
- * have been traversed. If there is more than one such method, the order of invocation is undefined.
- * </li>
+ * have been traversed. The class (including its superclasses) may have at most one such method.</li>
  * </ul>
  * 
  * @author Harald Wellmann
@@ -85,9 +89,9 @@ import org.ops4j.pax.carrot.step.Step;
  */
 public class RuleForInterpreter implements Interpreter {
 
-    protected Fixture fixture;
+    private Fixture fixture;
 
-    protected Statistics statistics;
+    private Statistics statistics;
 
     private Column[] columns;
 
@@ -102,6 +106,17 @@ public class RuleForInterpreter implements Interpreter {
     private ValueExpression filterExpr;
 
     private HashMap<String, String> rowMap;
+
+    /**
+     * Any exception thrown by a {@code @Before...} method of the current row.
+     * This exception will be marked in the next cell.
+     */
+    private Throwable exceptionInRow;
+
+    /**
+     * Has the {@code exceptionInRow} been marked on a cell?
+     */
+    private boolean exceptionMarked;
 
     /**
      * Creates an interpreter for the given fixture.
@@ -245,7 +260,10 @@ public class RuleForInterpreter implements Interpreter {
 
     private void callBeforeFirstExpectation() {
         if (beforeFirstExpectationInvocation != null) {
-            callInvocation(beforeFirstExpectationInvocation);
+            Result result = callInvocation(beforeFirstExpectationInvocation);
+            if (result.getStatus() == Status.EXCEPTION) {
+                exceptionInRow = result.getException();
+            }
         }
     }
 
@@ -253,21 +271,18 @@ public class RuleForInterpreter implements Interpreter {
         if (afterRowInvocation != null) {
             callInvocation(afterRowInvocation);
         }
+        exceptionInRow = null;
+        exceptionMarked = false;
     }
 
-    private void callInvocation(Invocation message) {
-        try {
-            Step step = new Step(message);
-            step.execute();
-            Result result = step.getResult();
-            if (result.getStatus() == Result.Status.EXCEPTION) {
-                Actions.updateStatistics(statistics, result);
-            }
+    private Result callInvocation(Invocation message) {
+        Step step = new Step(message);
+        step.execute();
+        Result result = step.getResult();
+        if (result.getStatus() == Result.Status.EXCEPTION) {
+            Actions.updateStatistics(statistics, result);
         }
-        // CHECKSTYLE:SKIP
-        catch (Exception exc) {
-            statistics.exception();
-        }
+        return result;
     }
 
     private void scanAnnotations() {
@@ -291,6 +306,18 @@ public class RuleForInterpreter implements Interpreter {
     }
 
     protected void processCell(Column column, Item cell) {
+        if (exceptionInRow != null) {
+            if (exceptionMarked) {
+                cell.mark(new IgnoredMarker(null));
+            }
+            else {
+                exceptionMarked = true;
+                cell.mark(new ExceptionMarker(exceptionInRow));
+            }
+            return;
+        }
+
+
         try {
             statistics.accumulate(column.processCell(cell));
         }

@@ -24,7 +24,7 @@ import java.lang.reflect.Method;
 import org.ops4j.pax.carrot.api.CarrotException;
 
 /**
- * An {@Invocation} invoking a {@link Method} by reflection.
+ * An {@link Invocation} invoking a {@link Method} by reflection.
  * @author Harald Wellmann
  *
  */
@@ -49,7 +49,7 @@ public class MethodInvocation implements Invocation {
             throw new CarrotException(exc);
         }
         catch (InvocationTargetException exc) {
-            throw new CarrotException(exc);
+            throw new CarrotException(exc.getCause());
         }
     }
 }
