@@ -86,13 +86,13 @@ public class HeaderCell {
             if (fixture.canGet(property)) {
                 invocation = fixture.deferredGet(property);
             }
-            else if (fixture.hasSimpleMethod(property)) {
-                invocation = fixture.deferredSimpleMethod(property);
-            }
             else {
                 if (isStrict()) {
                     throw new CarrotException(String.format(
                             "%s has no getter or method named '%s'", klass, property));
+                }
+                else if (fixture.hasSimpleMethod(property)) {
+                    invocation = fixture.deferredSimpleMethod(property);
                 }
             }
             return new ExpectedColumn(invocation, property);
