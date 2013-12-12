@@ -95,7 +95,16 @@ public class CarrotELContextTest {
     public void canInvokeNonStandardSetter() {
         context.setVariable("arg", factory.createValueExpression("17", Object.class));
         MethodExpression methodExpr = factory.createMethodExpression(context, "#{fixture.numItems(arg)}", Void.class, new Class[]{Object.class});
-        Object result = methodExpr.invoke(context, new Object[0]);
+        Object result = methodExpr.invoke(context, null);
+        assertThat(result, is(nullValue()));
+        assertThat(myPojo.numItems(), is(17));
+    }
+    
+    @Test
+    public void canInvokeNonStandardSetterWithExplicitType() {
+        context.setVariable("arg", factory.createValueExpression("17", Integer.class));
+        MethodExpression methodExpr = factory.createMethodExpression(context, "#{fixture.numItems(arg)}", Void.class, new Class[]{Integer.class});
+        Object result = methodExpr.invoke(context, null);
         assertThat(result, is(nullValue()));
         assertThat(myPojo.numItems(), is(17));
     }
@@ -124,12 +133,21 @@ public class CarrotELContextTest {
     }
     
     @Test
-    public void checkFilterExpression() {
+    public void filterExpressionShouldMatch() {
         ValueExpression expr = factory.createValueExpression(context, 
             "#{fixture.myInt == 17 and fixture.myString == 'foo' and fixture.color == 'RED'}", 
             Boolean.class);
         Object value = expr.getValue(context);
         assertThat((Boolean) value, is(true));
+    }
+    
+    @Test
+    public void filterExpressionShouldNotMatch() {
+        ValueExpression expr = factory.createValueExpression(context, 
+            "#{fixture.myInt == 17 and fixture.myString == 'fxx' and fixture.color == 'RED'}", 
+            Boolean.class);
+        Object value = expr.getValue(context);
+        assertThat((Boolean) value, is(false));
     }
     
     @Test
@@ -141,8 +159,6 @@ public class CarrotELContextTest {
         ValueExpression valueExpr = factory.createValueExpression(context, "#{row.foo}", String.class);
         Object result = valueExpr.getValue(context);
         assertThat(result, is(instanceOf(String.class)));
-        assertThat((String) result, is("bar"));
-        
+        assertThat((String) result, is("bar"));        
     }
-
 }

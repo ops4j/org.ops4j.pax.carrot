@@ -35,9 +35,15 @@
             </dependency>
 
             <dependency>
-                <groupId>org.glassfish</groupId>
-                <artifactId>javax.el</artifactId>
-                <version>3.0.0</version>
+                <groupId>org.apache.tomcat</groupId>
+                <artifactId>tomcat-jasper-el</artifactId>
+                <version>8.0.0-RC5</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.apache.tomcat</groupId>
+                <artifactId>tomcat-el-api</artifactId>
+                <version>8.0.0-RC5</version>
             </dependency>
 
             <dependency>
@@ -226,7 +232,7 @@
                         </execution>
                     </executions>
                     <configuration>
-                        <configLocation>checkstyle/pax-exam-checks.xml</configLocation>                        
+                        <configLocation>checkstyle/pax-exam-checks.xml</configLocation>
                         <excludes>com/sun/el/**</excludes>
                     </configuration>
                     <dependencies>

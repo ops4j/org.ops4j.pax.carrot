@@ -84,7 +84,7 @@ public class OsgiFileRunnerTest {
             workspaceBundle("pax-carrot-osgi"), workspaceBundle("pax-carrot-runner"),
             workspaceBundle("pax-carrot-samples/pax-carrot-sample1"),
 
-            mavenBundle("org.glassfish", "javax.el").versionAsInProject(),
+            mavenBundle("org.glassfish", "javax.el", "3.0.0"),
             mavenBundle("org.jsoup", "jsoup").versionAsInProject(),
             mavenBundle("org.apache.felix", "org.apache.felix.scr", "1.6.2"),
             wrappedBundle(mavenBundle("org.codehaus.plexus", "plexus-utils").versionAsInProject())

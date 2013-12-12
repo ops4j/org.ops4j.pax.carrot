@@ -32,6 +32,11 @@ import org.ops4j.pax.carrot.invocation.PropertyGetterInvocation;
 import org.ops4j.pax.carrot.invocation.PropertySetterInvocation;
 import org.ops4j.pax.carrot.invocation.SimpleMethodInvocation;
 
+/**
+ * Adapts any Java bean to the {@link Fixture} interface.
+ * 
+ * @author Harald Wellmann
+ */
 public class BeanFixture implements Fixture {
 
     private Object target;

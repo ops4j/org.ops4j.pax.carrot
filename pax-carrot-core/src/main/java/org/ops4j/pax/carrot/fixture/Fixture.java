@@ -33,11 +33,16 @@ import org.ops4j.pax.carrot.invocation.Invocation;
  * A Fixture property is either a Java Bean property with accessor methods following the usual
  * naming conventions, or a public field of the given name.
  * <p>
- * Bean properties are the preferred approach for new fixture classes. Public fields are supported
- * for easier migration from Fit to Pax Carrot.
+ * A simple method is a zero-argument method which may be invoked by an {@code enter} row of an action table.
+ * <p>
+ * A non-standard setter is a method with a setter signature but a name that does not follow Java bean
+ * conventions, e.g. {@code numItems(int)} instead of {@code setNumItems(int)}.
+ * <p>
+ * Public fields and non-standard setters are supported only for easier migration from Fit to Pax Carrot.
+ * To use these deprecated features, the system property {@code pax.carrot.compatibility} must be set
+ * to {@code fit}.
  * 
  * @author Harald Wellmann
- * 
  */
 public interface Fixture {
 
@@ -47,6 +52,7 @@ public interface Fixture {
     /** Can we get the given property from this fixture? */
     boolean canGet(String property);
 
+    /** Does this fixture have a simple (i.e. zero argument) method with the given name? */
     boolean hasSimpleMethod(String methodName);
     
     /**
@@ -65,8 +71,20 @@ public interface Fixture {
      */
     Invocation deferredSet(String property);
 
+    /**
+     * Returns an invocation object for the given simple method.
+     * 
+     * @param methodName name of zero-argument method
+     * @return
+     */
     Invocation deferredSimpleMethod(String methodName);
 
+    /**
+     * Returns an invocation object for the given non-standard setter method.
+     * 
+     * @param methodName name of one-argument method
+     * @return
+     */
     Invocation deferredNonStandardSet(String methodName);
 
     /**

@@ -118,7 +118,7 @@ public class CarrotELContext extends ELContext {
     }
 
     /**
-     * Get our resolver. Lazy initialize to a {@link SimpleResolver} if necessary.
+     * Get our resolver.
      */
     @Override
     public ELResolver getELResolver() {
