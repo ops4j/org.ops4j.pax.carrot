@@ -23,8 +23,10 @@ import javax.inject.Named;
 @Named
 public class FitCalculator {
 
+    // CHECKSTYLE:OFF - we do want to test legacy public members
     public int a;
     public int b;
+    // CHECKSTYLE:ON
 
     public int sum() {
         return a + b;
