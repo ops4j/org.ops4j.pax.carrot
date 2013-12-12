@@ -145,25 +145,42 @@ public class ActionInterpreter implements Interpreter {
      */
     private void processEnterRow(Item row) {
         String property = row.text();
-        Invocation invocation = null;
         Item argCell = row.nextSibling();
         String value = argCell.text();
         carrotContext.setVariable("arg", value);
+        try {
+            Invocation invocation = createEnterInvocation(property);
+            Step step = new Step(invocation);
+            step.execute(value);
+            Result result = step.getResult();
+            if (result.getException() != null) {
+                updateStatistics(statistics, result);
+                markException(argCell, result);
+            }
+        }
+        catch (CarrotException exc) {
+            row.mark(new ExceptionMarker(exc));
+            statistics.exception();
+        }
+    }
+
+    private Invocation createEnterInvocation(String property) {
+        Invocation invocation = null;
         if (currentFixture.canSet(property)) {
             invocation = currentFixture.deferredSet(property);
         }
         else {
-            if (!Configuration.isStrict()) {
+            if (Configuration.isStrict()) {
+                String klass = currentFixture.getTarget().getClass().getName();
+                throw new CarrotException(String.format("%s has no method named %s", klass,
+                        property));
+            }
+            else {
                 invocation = currentFixture.deferredNonStandardSet(property);
             }
         }
-        Step step = new Step(invocation);
-        step.execute(value);
-        Result result = step.getResult();
-        if (result.getException() != null) {
-            updateStatistics(statistics, result);
-            markException(argCell, result);
-        }
+
+        return invocation;
     }
 
     public void interpret(Item table, Statistics stats) {

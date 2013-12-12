@@ -123,6 +123,18 @@ public class FileRunnerTest {
     }
 
     @Test
+    public void runGreeterTestWithInvalidActions() {
+        FileRunner runner = new FileRunner(context, inputDir, outputDir, "greeter/greeterInvalid.html");
+        runner.run();
+        Statistics stats = runner.getResult();
+        assertThat(stats.totalCount(), is(3));
+        assertThat(stats.getNumRight(), is(0));
+        assertThat(stats.getNumWrong(), is(1));
+        assertThat(stats.getNumIgnored(), is(0));
+        assertThat(stats.getNumException(), is(2));
+    }
+
+    @Test
     public void runWhiteSpaceTest() {
         FileRunner runner = new FileRunner(context, inputDir, outputDir, "text/whitespace.html");
         runner.run();
