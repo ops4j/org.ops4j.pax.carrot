@@ -50,7 +50,7 @@ public class Greeter {
     /**
      * @param receiver the receiver to set
      */
-    public void receiver(String _receiver) {
+    public void setReceiver(String _receiver) {
         this.receiver = _receiver;
     }
 

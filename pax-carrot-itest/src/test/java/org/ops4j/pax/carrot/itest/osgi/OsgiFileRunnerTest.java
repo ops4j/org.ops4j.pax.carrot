@@ -25,6 +25,7 @@ import static org.ops4j.pax.exam.CoreOptions.bundle;
 import static org.ops4j.pax.exam.CoreOptions.junitBundles;
 import static org.ops4j.pax.exam.CoreOptions.mavenBundle;
 import static org.ops4j.pax.exam.CoreOptions.options;
+import static org.ops4j.pax.exam.CoreOptions.systemPackage;
 import static org.ops4j.pax.exam.CoreOptions.systemProperty;
 import static org.ops4j.pax.exam.CoreOptions.wrappedBundle;
 
@@ -76,15 +77,15 @@ public class OsgiFileRunnerTest {
             systemProperty("osgi.console").value("6666"),
             systemProperty("logback.configurationFile")
                 .value("file:src/test/resources/logback.xml"),
+            systemPackage("javax.el;version=3.0.0"),    
 
             // Bundles under test
             workspaceBundle("pax-carrot-core"), workspaceBundle("pax-carrot-html"),
             workspaceBundle("pax-carrot-osgi"), workspaceBundle("pax-carrot-runner"),
             workspaceBundle("pax-carrot-samples/pax-carrot-sample1"),
 
-            mavenBundle("de.odysseus.juel", "juel-impl").versionAsInProject(),
+            mavenBundle("org.glassfish", "javax.el").versionAsInProject(),
             mavenBundle("org.jsoup", "jsoup").versionAsInProject(),
-            mavenBundle("org.apache.geronimo.specs", "geronimo-el_2.2_spec").versionAsInProject(),
             mavenBundle("org.apache.felix", "org.apache.felix.scr", "1.6.2"),
             wrappedBundle(mavenBundle("org.codehaus.plexus", "plexus-utils").versionAsInProject())
                 .exports("*"),

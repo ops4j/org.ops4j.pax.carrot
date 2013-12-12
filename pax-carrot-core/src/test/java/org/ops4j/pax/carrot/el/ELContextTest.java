@@ -27,6 +27,9 @@ import static org.junit.Assert.assertThat;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.el.ELContext;
+import javax.el.ELManager;
+import javax.el.ELProcessor;
 import javax.el.ExpressionFactory;
 import javax.el.MethodExpression;
 import javax.el.MethodNotFoundException;
@@ -39,26 +42,34 @@ import org.junit.rules.ExpectedException;
 import org.ops4j.pax.carrot.el.MyPojo.Color;
 
 
-public class CarrotELContextTest {
+public class ELContextTest {
     
     @Rule
     public ExpectedException thrown = ExpectedException.none();
     
     private ExpressionFactory factory;
-    private CarrotELContext context;
+    private ELContext context;
     private MyPojo myPojo;
+
+    private ELManager manager;
+
+    private ELProcessor processor;
     
     @Before
     public void setUp() {
-        factory = ExpressionFactory.newInstance();
-        context = new CarrotELContext();
+        processor = new ELProcessor();
+        manager = processor.getELManager();
+        manager.addELResolver(new PublicFieldELResolver());
+        factory = ELManager.getExpressionFactory();
+        context = manager.getELContext();
         myPojo = new MyPojo();
         myPojo.setMyInt(17);
         myPojo.setMyString("foo");
         myPojo.myPublicString = "wide open";
         myPojo.setColor(Color.RED);
         myPojo.numItems(13);
-        context.setVariable("fixture", factory.createValueExpression(myPojo, MyPojo.class));
+        processor.defineBean("fixture", myPojo);
+        manager.setVariable("fixture", factory.createValueExpression(myPojo, MyPojo.class));
     }
 
     @Test
@@ -93,7 +104,7 @@ public class CarrotELContextTest {
     
     @Test
     public void canInvokeNonStandardSetter() {
-        context.setVariable("arg", factory.createValueExpression("17", Object.class));
+        manager.setVariable("arg", factory.createValueExpression("17", Object.class));
         MethodExpression methodExpr = factory.createMethodExpression(context, "#{fixture.numItems(arg)}", Void.class, new Class[]{Object.class});
         Object result = methodExpr.invoke(context, new Object[0]);
         assertThat(result, is(nullValue()));
@@ -137,7 +148,7 @@ public class CarrotELContextTest {
         Map<String,String> map = new HashMap<String, String>();
         map.put("foo", "bar");
         ValueExpression expr = factory.createValueExpression(map, Map.class);
-        context.setVariable("row", expr);
+        manager.setVariable("row", expr);
         ValueExpression valueExpr = factory.createValueExpression(context, "#{row.foo}", String.class);
         Object result = valueExpr.getValue(context);
         assertThat(result, is(instanceOf(String.class)));

@@ -36,6 +36,7 @@
 
         <module>pax-carrot-itest</module>
         <module>pax-carrot-itest-javaee</module>
+        <module>pax-carrot-el-patch</module>
     </modules>
 
     <licenses>

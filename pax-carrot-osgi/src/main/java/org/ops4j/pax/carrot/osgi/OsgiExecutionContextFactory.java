@@ -36,7 +36,7 @@ public class OsgiExecutionContextFactory implements ExecutionContextFactory {
     
     private FixtureFactory fixtureFactory;
     
-    private ExpressionFactory expressionFactory;
+    private ExpressionFactory expressionFactory = ExpressionFactory.newInstance();
 
     @Override
     public ExecutionContext newInstance(Object configuration) {

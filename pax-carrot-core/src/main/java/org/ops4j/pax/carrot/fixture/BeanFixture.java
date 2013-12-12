@@ -19,6 +19,7 @@
 package org.ops4j.pax.carrot.fixture;
 
 import javax.el.MethodExpression;
+import javax.el.MethodInfo;
 import javax.el.MethodNotFoundException;
 import javax.el.PropertyNotFoundException;
 import javax.el.ValueExpression;
@@ -70,7 +71,7 @@ public class BeanFixture implements Fixture {
             return true;
         }
         catch (PropertyNotFoundException exc) {
-            return hasNonStandardSetter(property);
+            return false;
         }
     }
 
@@ -88,19 +89,8 @@ public class BeanFixture implements Fixture {
     public boolean hasSimpleMethod(String methodName) {
         MethodExpression expr = context.createSimpleMethodExpression(fixtureName, methodName);
         try {
-            expr.getMethodInfo(context);
-            return true;
-        }
-        catch (MethodNotFoundException exc) {
-            return false;
-        }
-    }
-
-    public boolean hasNonStandardSetter(String methodName) {
-        MethodExpression expr = context.createSimpleMethodExpression(fixtureName, methodName);
-        try {
-            expr.getMethodInfo(context);
-            return true;
+            MethodInfo methodInfo = expr.getMethodInfo(context);
+            return methodInfo != null;
         }
         catch (MethodNotFoundException exc) {
             return false;
@@ -143,6 +133,5 @@ public class BeanFixture implements Fixture {
     @Override
     public Fixture wrap(Object wrappedTarget, String name) {
         return new BeanFixture(wrappedTarget, name, context);
-    }
-
+    } 
 }

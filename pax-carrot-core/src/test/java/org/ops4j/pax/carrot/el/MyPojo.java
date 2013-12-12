@@ -64,6 +64,9 @@ public class MyPojo {
         return color;
     }
 
+    public String name() {
+        return myString;
+    }
     
     public void setColor(Color color) {
         this.color = color;

@@ -48,9 +48,6 @@ public interface Fixture {
     boolean canGet(String property);
 
     boolean hasSimpleMethod(String methodName);
-
-    boolean hasNonStandardSetter(String methodName);
-    
     
     /**
      * Returns an invocation object for setting the given property.

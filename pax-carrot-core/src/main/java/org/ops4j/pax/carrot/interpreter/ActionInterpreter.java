@@ -153,7 +153,9 @@ public class ActionInterpreter implements Interpreter {
             invocation = currentFixture.deferredSet(property);
         }
         else {
-            invocation = currentFixture.deferredNonStandardSet(property);
+            if (!Configuration.isStrict()) {
+                invocation = currentFixture.deferredNonStandardSet(property);
+            }
         }
         Step step = new Step(invocation);
         step.execute(value);

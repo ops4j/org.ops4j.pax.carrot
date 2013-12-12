@@ -33,11 +33,11 @@ import org.ops4j.pax.carrot.runner.FileRunner;
 
 public class FileRunnerTest {
 
-    private File inputDir;
+    protected File inputDir;
 
-    private File outputDir;
+    protected File outputDir;
 
-    private ExecutionContext context;
+    protected ExecutionContext context;
 
     @Before
     public void setUp() {
@@ -84,6 +84,18 @@ public class FileRunnerTest {
         assertThat(stats.getNumWrong(), is(2));
         assertThat(stats.getNumIgnored(), is(0));
         assertThat(stats.getNumException(), is(1));
+    }
+
+    @Test
+    public void runCalculatorTestWithInvalidColumns() {
+        FileRunner runner = new FileRunner(context, inputDir, outputDir, "calculator/calculatorInvalidColumns.html");
+        runner.run();
+        Statistics stats = runner.getResult();
+        assertThat(stats.totalCount(), is(4));
+        assertThat(stats.getNumRight(), is(0));
+        assertThat(stats.getNumWrong(), is(2));
+        assertThat(stats.getNumIgnored(), is(0));
+        assertThat(stats.getNumException(), is(2));
     }
 
     @Test

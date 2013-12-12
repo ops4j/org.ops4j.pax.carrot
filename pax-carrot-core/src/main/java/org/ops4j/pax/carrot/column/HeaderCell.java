@@ -18,7 +18,10 @@
 
 package org.ops4j.pax.carrot.column;
 
+import static org.ops4j.pax.carrot.interpreter.Configuration.isStrict;
+
 import org.jsoup.helper.StringUtil;
+import org.ops4j.pax.carrot.api.CarrotException;
 import org.ops4j.pax.carrot.fixture.Fixture;
 import org.ops4j.pax.carrot.invocation.Invocation;
 
@@ -74,6 +77,8 @@ public class HeaderCell {
             return new NoOpColumn();
         }
 
+        String klass = fixture.getTarget().getClass().getName();
+
         String property = property();
         if (isExpected()) {
 
@@ -85,10 +90,22 @@ public class HeaderCell {
                 invocation = fixture.deferredSimpleMethod(property);
             }
             else {
-                return new NoOpColumn();
+                if (isStrict()) {
+                    throw new CarrotException(String.format(
+                            "%s has no getter or method named '%s'", klass, property));
+                }
             }
             return new ExpectedColumn(invocation, property);
         }
-        return new GivenColumn(fixture.deferredSet(property), property);
+        else {
+            if (isStrict()) {
+                if (fixture.canSet(property)) {
+                    return new GivenColumn(fixture.deferredSet(property), property);
+                }
+                throw new CarrotException(String.format("%s has no setter or method named '%s'",
+                        klass, property));
+            }
+            return new GivenColumn(fixture.deferredSet(property), property);
+        }
     }
 }

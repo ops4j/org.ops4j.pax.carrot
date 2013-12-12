@@ -33,6 +33,7 @@ import org.ops4j.pax.carrot.api.Statistics;
 import org.ops4j.pax.carrot.html.DocumentProcessor;
 import org.ops4j.pax.carrot.html.HtmlSpecification;
 import org.ops4j.pax.carrot.html.fit.FitCompatibilityProcessor;
+import org.ops4j.pax.carrot.interpreter.Configuration;
 import org.ops4j.pax.carrot.runner.listener.DefaultRunnerListener;
 import org.ops4j.pax.carrot.runner.listener.RunnerListener;
 
@@ -134,8 +135,7 @@ public class FileRunner {
     }
 
     private void processDocument(Document document) {
-        String compatibility = System.getProperty("pax.carrot.compatibility");
-        if (compatibility != null && compatibility.equals("fit")) {
+        if (Configuration.isFitCompatible()) {
             DocumentProcessor processor = new FitCompatibilityProcessor();
             processor.process(document);
         }
