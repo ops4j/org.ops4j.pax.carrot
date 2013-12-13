@@ -23,6 +23,7 @@
         <slf4j.version>1.7.5</slf4j.version>
         <spring.version>3.2.2.RELEASE</spring.version>
         <pax.carrot.wiki.url>http://team.ops4j.org/wiki/display/paxcarrot/</pax.carrot.wiki.url>
+        <tomcat.version>8.0.0-RC5</tomcat.version>
     </properties>
 
     <dependencyManagement>
@@ -31,19 +32,19 @@
             <dependency>
                 <groupId>org.jsoup</groupId>
                 <artifactId>jsoup</artifactId>
-                <version>1.7.2</version>
+                <version>1.7.3</version>
             </dependency>
 
             <dependency>
                 <groupId>org.apache.tomcat</groupId>
                 <artifactId>tomcat-jasper-el</artifactId>
-                <version>8.0.0-RC5</version>
+                <version>${tomcat.version}</version>
             </dependency>
 
             <dependency>
                 <groupId>org.apache.tomcat</groupId>
                 <artifactId>tomcat-el-api</artifactId>
-                <version>8.0.0-RC5</version>
+                <version>${tomcat.version}</version>
             </dependency>
 
             <dependency>
