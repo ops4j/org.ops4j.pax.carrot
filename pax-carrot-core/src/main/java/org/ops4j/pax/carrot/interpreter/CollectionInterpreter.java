@@ -37,6 +37,7 @@ import org.ops4j.pax.carrot.api.ExecutionContext;
 import org.ops4j.pax.carrot.api.Interpreter;
 import org.ops4j.pax.carrot.api.Item;
 import org.ops4j.pax.carrot.api.Statistics;
+import org.ops4j.pax.carrot.column.HeaderCell;
 import org.ops4j.pax.carrot.fixture.Fixture;
 import org.ops4j.pax.carrot.fixture.MatchedRow;
 import org.ops4j.pax.carrot.invocation.Invocation;
@@ -100,7 +101,8 @@ public abstract class CollectionInterpreter implements Interpreter {
 
             if (i <= headers.numSiblings()) {
                 try {
-                    Step step = new Step(rowFixtureAdapter.deferredGet(headers.at(i).text()));
+                    String property = new HeaderCell(headers.at(i).text()).property();
+                    Step step = new Step(rowFixtureAdapter.deferredGet(property));
                     if (!StringUtil.isBlank(cell.text())) {
                         step.expect(is(cell.text()));
                     }
@@ -127,7 +129,8 @@ public abstract class CollectionInterpreter implements Interpreter {
         for (int i = 0; i <= headers.numSiblings(); i++) {
             Item cell = row.appendChild();
             try {
-                Step step = new Step(rowFixtureAdapter.deferredGet(headers.at(i).text()));
+                String property = new HeaderCell(headers.at(i).text()).property();
+                Step step = new Step(rowFixtureAdapter.deferredGet(property));
 
                 Object actual = step.execute();
 

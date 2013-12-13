@@ -26,6 +26,7 @@ import java.util.List;
 import org.hamcrest.Matcher;
 import org.jsoup.helper.StringUtil;
 import org.ops4j.pax.carrot.api.Item;
+import org.ops4j.pax.carrot.column.HeaderCell;
 import org.ops4j.pax.carrot.fixture.Fixture;
 import org.ops4j.pax.carrot.fixture.MatchedRow;
 import org.ops4j.pax.carrot.invocation.Invocation;
@@ -83,7 +84,7 @@ public class RowFixtureMatcher {
                 continue;
             }
 
-            String property = header.text();
+            String property = new HeaderCell(header.text()).property();
             try {
                 Invocation invocation = fixture.deferredGet(property);
 
