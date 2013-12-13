@@ -124,14 +124,26 @@ public class FileRunnerTest {
 
     @Test
     public void runGreeterTestWithInvalidActions() {
-        FileRunner runner = new FileRunner(context, inputDir, outputDir, "greeter/greeterInvalid.html");
+        FileRunner runner = new FileRunner(context, inputDir, outputDir, "greeter/greeterInvalidActions.html");
         runner.run();
         Statistics stats = runner.getResult();
-        assertThat(stats.totalCount(), is(3));
+        assertThat(stats.totalCount(), is(5));
         assertThat(stats.getNumRight(), is(0));
-        assertThat(stats.getNumWrong(), is(1));
+        assertThat(stats.getNumWrong(), is(0));
         assertThat(stats.getNumIgnored(), is(0));
-        assertThat(stats.getNumException(), is(2));
+        assertThat(stats.getNumException(), is(5));
+    }
+
+    @Test
+    public void runGreeterTestWithInvalidFixture() {
+        FileRunner runner = new FileRunner(context, inputDir, outputDir, "greeter/greeterInvalidFixture.html");
+        runner.run();
+        Statistics stats = runner.getResult();
+        assertThat(stats.totalCount(), is(1));
+        assertThat(stats.getNumRight(), is(0));
+        assertThat(stats.getNumWrong(), is(0));
+        assertThat(stats.getNumIgnored(), is(0));
+        assertThat(stats.getNumException(), is(1));
     }
 
     @Test

@@ -101,27 +101,38 @@ public class ActionInterpreter implements Interpreter {
      */
     private void processCheckRow(Item cell) {
         String property = cell.text();
-        Invocation invocation = null;
+        try {
+            Invocation invocation = createCheckInvocation(property);
+            Item expectedCell = cell.nextSibling();
+            if (expectedCell == null) {
+                cell.mark(new ExceptionMarker(new CarrotException("missing argument")));
+                statistics.exception();
+                return;
+            }
+            String expected = expectedCell.text();
+            Step step = new Step(invocation);
+            step.expect(expected);
+            step.execute();
+            Result result = step.getResult();
+            updateStatistics(statistics, result);
+            markItem(expectedCell, result, true);
+        }
+        catch (CarrotException exc) {
+            cell.mark(new ExceptionMarker(exc));
+            statistics.exception();
+        }
+    }
+
+    private Invocation createCheckInvocation(String property) {
         if (currentFixture.canGet(property)) {
-            invocation = currentFixture.deferredGet(property);
+            return currentFixture.deferredGet(property);
         }
-        else if (currentFixture.hasSimpleMethod(property)) {
-            invocation = currentFixture.deferredSimpleMethod(property);
+
+        if (Configuration.isFitCompatible()) {
+            return currentFixture.deferredSimpleMethod(property);
         }
-        else {
-            return;
-        }
-        Item expectedCell = cell.nextSibling();
-        if (expectedCell == null) {
-            return;
-        }
-        String expected = expectedCell.text();
-        Step step = new Step(invocation);
-        step.expect(expected);
-        step.execute();
-        Result result = step.getResult();
-        updateStatistics(statistics, result);
-        markItem(expectedCell, result, true);
+        String klass = currentFixture.getTarget().getClass().getName();
+        throw new CarrotException(String.format("%s has no getter for '%s'", klass, property));
     }
 
     /**
@@ -138,6 +149,12 @@ public class ActionInterpreter implements Interpreter {
                 markException(cell, result);
             }
         }
+        else {
+            String klass = currentFixture.getTarget().getClass().getName();
+            CarrotException exc = new CarrotException(String.format("%s has no simple method named '%s'", klass, methodName));
+            cell.mark(new ExceptionMarker(exc));
+            statistics.exception();            
+        }
     }
 
     /**
@@ -146,6 +163,12 @@ public class ActionInterpreter implements Interpreter {
     private void processEnterRow(Item row) {
         String property = row.text();
         Item argCell = row.nextSibling();
+        if (argCell == null) {
+            row.mark(new ExceptionMarker(new CarrotException("missing argument")));
+            statistics.exception();
+            return;
+        }
+        
         String value = argCell.text();
         carrotContext.setVariable("arg", value);
         try {
