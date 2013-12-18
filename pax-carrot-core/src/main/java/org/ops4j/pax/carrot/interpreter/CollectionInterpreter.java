@@ -19,6 +19,7 @@
 package org.ops4j.pax.carrot.interpreter;
 
 import static org.hamcrest.CoreMatchers.is;
+import static org.ops4j.pax.carrot.interpreter.Configuration.isFitCompatible;
 import static org.ops4j.pax.carrot.step.Actions.markItem;
 import static org.ops4j.pax.carrot.step.Actions.updateStatistics;
 
@@ -33,6 +34,7 @@ import javax.el.ELException;
 
 import org.jsoup.helper.StringUtil;
 import org.ops4j.pax.carrot.annotation.CollectionProvider;
+import org.ops4j.pax.carrot.api.CarrotException;
 import org.ops4j.pax.carrot.api.ExecutionContext;
 import org.ops4j.pax.carrot.api.Interpreter;
 import org.ops4j.pax.carrot.api.Item;
@@ -102,7 +104,8 @@ public abstract class CollectionInterpreter implements Interpreter {
             if (i <= headers.numSiblings()) {
                 try {
                     String property = new HeaderCell(headers.at(i).text()).property();
-                    Step step = new Step(rowFixtureAdapter.deferredGet(property));
+                    Invocation invocation = getInvocation(rowFixtureAdapter, property);
+                    Step step = new Step(invocation);
                     if (!StringUtil.isBlank(cell.text())) {
                         step.expect(is(cell.text()));
                     }
@@ -123,6 +126,22 @@ public abstract class CollectionInterpreter implements Interpreter {
         }
     }
 
+    private Invocation getInvocation(Fixture rowFixtureAdapter, String property) {
+        if (rowFixtureAdapter.canGet(property)) {
+            return rowFixtureAdapter.deferredGet(property);
+        }
+        else {
+            if (isFitCompatible()) {
+                if (fixture.hasSimpleMethod(property)) {
+                    return fixture.deferredSimpleMethod(property);
+                }
+            }
+        }
+        String klass = rowFixtureAdapter.getTarget().getClass().getName();
+        throw new CarrotException(String.format("%s has no getter or method named '%s'", klass,
+                property));
+    }
+
     protected void addSurplusRow(Item item, Item headers, Fixture rowFixtureAdapter) {
         Item row = item.appendChild();
 
@@ -130,7 +149,7 @@ public abstract class CollectionInterpreter implements Interpreter {
             Item cell = row.appendChild();
             try {
                 String property = new HeaderCell(headers.at(i).text()).property();
-                Step step = new Step(rowFixtureAdapter.deferredGet(property));
+                Step step = new Step(getInvocation(rowFixtureAdapter, property));
 
                 Object actual = step.execute();
 
@@ -140,7 +159,8 @@ public abstract class CollectionInterpreter implements Interpreter {
             }
             // CHECKSTYLE:SKIP
             catch (Exception exc) {
-                cell.mark(new IgnoredMarker(exc));
+                cell.mark(new ExceptionMarker(exc));
+                statistics.exception();
             }
         }
     }
