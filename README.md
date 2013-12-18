@@ -27,7 +27,7 @@ Run Build:
 
 Releases go to Maven Central.
 
-Pax Carrot is incubating. The current milestone release is *Pax Carrot 0.1.0*.
+Pax Carrot is incubating. The current milestone release is *Pax Carrot 0.4.1*.
 
 ## Issue Tracking
 
