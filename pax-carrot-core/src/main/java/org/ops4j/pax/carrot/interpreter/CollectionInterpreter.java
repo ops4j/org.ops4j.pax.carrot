@@ -132,8 +132,8 @@ public abstract class CollectionInterpreter implements Interpreter {
         }
         else {
             if (isFitCompatible()) {
-                if (fixture.hasSimpleMethod(property)) {
-                    return fixture.deferredSimpleMethod(property);
+                if (rowFixtureAdapter.hasSimpleMethod(property)) {
+                    return rowFixtureAdapter.deferredSimpleMethod(property);
                 }
             }
         }

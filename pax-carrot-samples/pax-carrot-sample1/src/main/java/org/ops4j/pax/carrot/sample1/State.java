@@ -72,5 +72,7 @@ public class State {
         return "State [name=" + name + ", capital=" + capital + "]";
     }
     
-    
+    public String capitalCity() {
+        return capital;
+    }
 }

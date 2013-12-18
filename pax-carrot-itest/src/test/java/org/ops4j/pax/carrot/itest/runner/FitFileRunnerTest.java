@@ -75,4 +75,18 @@ public class FitFileRunnerTest extends FileRunnerTest {
         assertThat(stats.getNumIgnored(), is(0));
         assertThat(stats.getNumException(), is(2));
     }
+    
+    @Test
+    public void runStatesTestWithParentheses() {
+        FileRunner runner = new FileRunner(context, inputDir, outputDir, "states/statesParentheses.html");
+        runner.run();
+        Statistics stats = runner.getResult();
+        assertThat(stats.totalCount(), is(98));
+        assertThat(stats.getNumRight(), is(92));
+        assertThat(stats.getNumWrong(), is(6));
+        assertThat(stats.getNumIgnored(), is(0));
+        assertThat(stats.getNumException(), is(0));
+    }
+
+    
 }
